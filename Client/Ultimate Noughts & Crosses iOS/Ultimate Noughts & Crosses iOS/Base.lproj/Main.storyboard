@@ -1,0 +1,851 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15F18b" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+    </dependencies>
+    <scenes>
+        <!--Register Nick View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="RegisterNickViewController" customModule="Ultimate_Noughts___Crosses_iOS" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="L25-dl-vLx">
+                                <rect key="frame" x="150" y="205" width="300" height="189"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yHM-8Q-eVF">
+                                        <rect key="frame" x="87" y="151" width="126" height="30"/>
+                                        <state key="normal" title="Register Your Nick"/>
+                                        <connections>
+                                            <action selector="registerNick" destination="BYZ-38-t0r" eventType="touchUpInside" id="CL5-wW-tvC"/>
+                                        </connections>
+                                    </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gex-Uo-7lY">
+                                        <rect key="frame" x="0.0" y="8" width="300" height="61"/>
+                                        <string key="text">Choose &amp; register a unique nickname.
+This nick will identify you within the game.</string>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2k2-io-RuD">
+                                        <rect key="frame" x="15" y="113" width="269" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="269" id="sF5-b1-Nb8"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no"/>
+                                    </textField>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="gex-Uo-7lY" firstAttribute="top" secondItem="L25-dl-vLx" secondAttribute="top" constant="8" id="30K-e3-eyf"/>
+                                    <constraint firstItem="gex-Uo-7lY" firstAttribute="leading" secondItem="L25-dl-vLx" secondAttribute="leading" id="A4P-4J-zoZ"/>
+                                    <constraint firstItem="yHM-8Q-eVF" firstAttribute="top" secondItem="2k2-io-RuD" secondAttribute="bottom" constant="8" id="Bw7-CY-cFb"/>
+                                    <constraint firstItem="gex-Uo-7lY" firstAttribute="centerX" secondItem="L25-dl-vLx" secondAttribute="centerX" id="HfY-vY-x5L"/>
+                                    <constraint firstItem="yHM-8Q-eVF" firstAttribute="centerX" secondItem="L25-dl-vLx" secondAttribute="centerX" id="KXn-C8-NzI"/>
+                                    <constraint firstAttribute="trailing" secondItem="gex-Uo-7lY" secondAttribute="trailing" id="LJO-Br-SCh"/>
+                                    <constraint firstAttribute="height" constant="189" id="S1x-io-eRY"/>
+                                    <constraint firstAttribute="width" constant="300" id="SI0-rR-dcR"/>
+                                    <constraint firstItem="2k2-io-RuD" firstAttribute="centerX" secondItem="L25-dl-vLx" secondAttribute="centerX" id="Yjz-7d-Lzg"/>
+                                    <constraint firstAttribute="bottom" secondItem="yHM-8Q-eVF" secondAttribute="bottom" constant="8" id="fgo-Mx-HBc"/>
+                                </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="HfY-vY-x5L"/>
+                                    </mask>
+                                </variation>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="L25-dl-vLx" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="BZE-EV-Aba"/>
+                            <constraint firstItem="L25-dl-vLx" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="hle-i5-LQw"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="nickText" destination="2k2-io-RuD" id="tzv-7B-Noi"/>
+                        <segue destination="lIx-pt-zJc" kind="show" identifier="nickRegistered" id="hjy-xp-tmy"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="392" y="590"/>
+        </scene>
+        <!--Main Menu View Controller-->
+        <scene sceneID="AXr-Se-z0j">
+            <objects>
+                <viewController id="lIx-pt-zJc" customClass="MainMenuViewController" customModule="Ultimate_Noughts___Crosses_iOS" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="bqC-un-6it"/>
+                        <viewControllerLayoutGuide type="bottom" id="aOb-70-2Ap"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="22y-uB-RkH">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZUU-Vb-gmn">
+                                <rect key="frame" x="180" y="214" width="240" height="172"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UpX-XJ-6vJ">
+                                        <rect key="frame" x="84" y="8" width="73" height="30"/>
+                                        <state key="normal" title="Join Game"/>
+                                        <connections>
+                                            <action selector="joinGame" destination="lIx-pt-zJc" eventType="touchUpInside" id="oIe-u5-MUw"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qtX-Z9-GLs">
+                                        <rect key="frame" x="78" y="134" width="85" height="30"/>
+                                        <state key="normal" title="View Scores"/>
+                                        <connections>
+                                            <segue destination="8vG-AS-Vlj" kind="show" id="QrY-yZ-drp"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CUH-h3-CQc">
+                                        <rect key="frame" x="64" y="71" width="112" height="30"/>
+                                        <state key="normal" title="Play Against Bot"/>
+                                        <connections>
+                                            <action selector="botGame" destination="lIx-pt-zJc" eventType="touchUpInside" id="cBR-VI-gPW"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="qtX-Z9-GLs" secondAttribute="bottom" constant="8" id="2Ak-MN-elF"/>
+                                    <constraint firstAttribute="width" constant="240" id="2mR-Y6-vdc"/>
+                                    <constraint firstAttribute="height" constant="172" id="4ZO-mw-3uL"/>
+                                    <constraint firstItem="CUH-h3-CQc" firstAttribute="centerX" secondItem="ZUU-Vb-gmn" secondAttribute="centerX" id="8PR-mU-EDw"/>
+                                    <constraint firstItem="CUH-h3-CQc" firstAttribute="centerY" secondItem="ZUU-Vb-gmn" secondAttribute="centerY" id="AML-wi-Uxl"/>
+                                    <constraint firstItem="UpX-XJ-6vJ" firstAttribute="centerX" secondItem="ZUU-Vb-gmn" secondAttribute="centerX" id="Iqf-zh-CsE"/>
+                                    <constraint firstItem="qtX-Z9-GLs" firstAttribute="centerX" secondItem="ZUU-Vb-gmn" secondAttribute="centerX" id="MZI-cW-iDK"/>
+                                    <constraint firstItem="UpX-XJ-6vJ" firstAttribute="top" secondItem="ZUU-Vb-gmn" secondAttribute="top" constant="8" id="RNz-VR-EqU"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="ZUU-Vb-gmn" firstAttribute="centerX" secondItem="22y-uB-RkH" secondAttribute="centerX" id="5Nu-jn-MQy"/>
+                            <constraint firstItem="ZUU-Vb-gmn" firstAttribute="centerY" secondItem="22y-uB-RkH" secondAttribute="centerY" id="LAD-4M-03n"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <segue destination="8Vz-P4-eHM" kind="show" identifier="joinGame" id="RZh-wf-E5u"/>
+                        <segue destination="WtD-hn-WqT" kind="show" identifier="playGame" id="ekX-te-Bb9"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="obX-X0-H6B" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1136" y="590"/>
+        </scene>
+        <!--Table View Controller-->
+        <scene sceneID="LYk-fQ-Cmk">
+            <objects>
+                <tableViewController id="8vG-AS-Vlj" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="yCO-Ur-PLd">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="kvd-qy-jnz">
+                                <rect key="frame" x="0.0" y="28" width="600" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="kvd-qy-jnz" id="yIZ-hZ-jDj">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="8vG-AS-Vlj" id="AkO-TN-Qfd"/>
+                            <outlet property="delegate" destination="8vG-AS-Vlj" id="Xmn-0u-VFp"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="CEC-xr-mt8" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1136" y="1324"/>
+        </scene>
+        <!--Join Game View Controller-->
+        <scene sceneID="BDa-dA-Poz">
+            <objects>
+                <viewController id="8Vz-P4-eHM" customClass="JoinGameViewController" customModule="Ultimate_Noughts___Crosses_iOS" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="UT0-lw-Ue3"/>
+                        <viewControllerLayoutGuide type="bottom" id="NoG-TD-eLE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="i69-Kf-66S">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7vZ-Jz-Fh1">
+                                <rect key="frame" x="180" y="200" width="240" height="200"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Waiting for Opponent…" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JF2-EH-cWT">
+                                        <rect key="frame" x="32" y="21" width="177" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fc5-1K-C3J">
+                                        <rect key="frame" x="76" y="152" width="88" height="30"/>
+                                        <state key="normal" title="Stop Waiting"/>
+                                        <connections>
+                                            <action selector="stopWaiting" destination="8Vz-P4-eHM" eventType="touchUpInside" id="Uan-wg-Wr0"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="JF2-EH-cWT" firstAttribute="top" secondItem="7vZ-Jz-Fh1" secondAttribute="top" constant="21" id="LbJ-Ve-UC4"/>
+                                    <constraint firstItem="fc5-1K-C3J" firstAttribute="centerX" secondItem="7vZ-Jz-Fh1" secondAttribute="centerX" id="MZG-jn-f9c"/>
+                                    <constraint firstAttribute="bottom" secondItem="fc5-1K-C3J" secondAttribute="bottom" constant="18" id="Vnf-52-SBF"/>
+                                    <constraint firstAttribute="height" constant="200" id="Z9K-1z-byc"/>
+                                    <constraint firstItem="JF2-EH-cWT" firstAttribute="centerX" secondItem="7vZ-Jz-Fh1" secondAttribute="centerX" id="aT1-kk-Lpy"/>
+                                    <constraint firstAttribute="width" constant="240" id="sBv-pd-oR2"/>
+                                </constraints>
+                            </view>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="JkE-LN-JfP">
+                                <rect key="frame" x="290" y="290" width="20" height="20"/>
+                            </activityIndicatorView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="7vZ-Jz-Fh1" firstAttribute="centerX" secondItem="i69-Kf-66S" secondAttribute="centerX" id="abv-cN-V2h"/>
+                            <constraint firstItem="JkE-LN-JfP" firstAttribute="centerX" secondItem="7vZ-Jz-Fh1" secondAttribute="centerX" id="cVF-Zl-HIe"/>
+                            <constraint firstItem="7vZ-Jz-Fh1" firstAttribute="centerY" secondItem="i69-Kf-66S" secondAttribute="centerY" id="voQ-3O-Xc5"/>
+                            <constraint firstItem="JkE-LN-JfP" firstAttribute="centerY" secondItem="7vZ-Jz-Fh1" secondAttribute="centerY" id="vpe-rf-v16"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <segue destination="WtD-hn-WqT" kind="show" identifier="playGame" id="tAP-9I-80M"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="d2K-yr-fYh" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1864" y="233"/>
+        </scene>
+        <!--Play Game View Controller-->
+        <scene sceneID="iRt-sk-75Y">
+            <objects>
+                <viewController id="WtD-hn-WqT" customClass="PlayGameViewController" customModule="Ultimate_Noughts___Crosses_iOS" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="b75-eg-PTw"/>
+                        <viewControllerLayoutGuide type="bottom" id="lmP-PB-dBh"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="EC0-eV-HnJ">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="04F-rk-zs1">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="ED2-nC-1QA">
+                                        <rect key="frame" x="36" y="22" width="528" height="528"/>
+                                        <subviews>
+                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="5GA-Rm-Z0F">
+                                                <rect key="frame" x="0.0" y="0.0" width="528" height="170.5"/>
+                                                <subviews>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="wf9-eJ-gSA">
+                                                        <rect key="frame" x="0.0" y="0.0" width="170.5" height="170.5"/>
+                                                        <subviews>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="KfZ-R5-WgV">
+                                                                <rect key="frame" x="0.0" y="0.0" width="170.5" height="54"/>
+                                                                <subviews>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0BK-fB-Amh" customClass="UIImageView">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="54" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mbx-A1-Cx9" customClass="UIImageView">
+                                                                        <rect key="frame" x="58" y="0.0" width="54.5" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JrB-j9-anb" customClass="UIImageView">
+                                                                        <rect key="frame" x="116.5" y="0.0" width="54" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                </subviews>
+                                                            </stackView>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="UGW-of-H3N">
+                                                                <rect key="frame" x="0.0" y="58" width="170.5" height="54.5"/>
+                                                                <subviews>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PWf-4R-6gO" customClass="UIImageView">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="54" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LqI-It-TfD" customClass="UIImageView">
+                                                                        <rect key="frame" x="58" y="0.0" width="54.5" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Gxb-VN-hj4" customClass="UIImageView">
+                                                                        <rect key="frame" x="116.5" y="0.0" width="54" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                </subviews>
+                                                            </stackView>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="OlI-NO-zHR">
+                                                                <rect key="frame" x="0.0" y="116.5" width="170.5" height="54"/>
+                                                                <subviews>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="o8W-IJ-mTB" customClass="UIImageView">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="54" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SBR-YJ-Yf3" customClass="UIImageView">
+                                                                        <rect key="frame" x="58" y="0.0" width="54.5" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iS7-tw-4KP" customClass="UIImageView">
+                                                                        <rect key="frame" x="116.5" y="0.0" width="54" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                </subviews>
+                                                            </stackView>
+                                                        </subviews>
+                                                    </stackView>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="TUl-vL-Xh3">
+                                                        <rect key="frame" x="178.5" y="0.0" width="171" height="170.5"/>
+                                                        <subviews>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="kja-zq-L1o">
+                                                                <rect key="frame" x="0.0" y="0.0" width="171" height="54"/>
+                                                                <subviews>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gcc-IJ-VDp" customClass="UIImageView">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="54.5" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ptO-bL-jal" customClass="UIImageView">
+                                                                        <rect key="frame" x="58.5" y="0.0" width="54" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DXQ-O0-5Sa" customClass="UIImageView">
+                                                                        <rect key="frame" x="116.5" y="0.0" width="54.5" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                </subviews>
+                                                            </stackView>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="H7F-be-xt3">
+                                                                <rect key="frame" x="0.0" y="58" width="171" height="54.5"/>
+                                                                <subviews>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HAC-fs-0nm" customClass="UIImageView">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="54.5" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tLk-e0-fh1" customClass="UIImageView">
+                                                                        <rect key="frame" x="58.5" y="0.0" width="54" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rbT-xA-Skh" customClass="UIImageView">
+                                                                        <rect key="frame" x="116.5" y="0.0" width="54.5" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                </subviews>
+                                                            </stackView>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="liV-EF-1J4">
+                                                                <rect key="frame" x="0.0" y="116.5" width="171" height="54"/>
+                                                                <subviews>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Kem-c1-f9I" customClass="UIImageView">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="54.5" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="udE-WS-x5E" customClass="UIImageView">
+                                                                        <rect key="frame" x="58.5" y="0.0" width="54" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HMQ-R5-jdN" customClass="UIImageView">
+                                                                        <rect key="frame" x="116.5" y="0.0" width="54.5" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                </subviews>
+                                                            </stackView>
+                                                        </subviews>
+                                                    </stackView>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="K8V-24-jQd">
+                                                        <rect key="frame" x="357.5" y="0.0" width="170.5" height="170.5"/>
+                                                        <subviews>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="wOF-n6-gNd">
+                                                                <rect key="frame" x="0.0" y="0.0" width="170.5" height="54"/>
+                                                                <subviews>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tPO-BZ-XQe" customClass="UIImageView">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="54" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="T24-Br-trS" customClass="UIImageView">
+                                                                        <rect key="frame" x="58" y="0.0" width="54.5" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qmK-RW-oTY" customClass="UIImageView">
+                                                                        <rect key="frame" x="116.5" y="0.0" width="54" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                </subviews>
+                                                            </stackView>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="UeA-B9-vTP">
+                                                                <rect key="frame" x="0.0" y="58" width="170.5" height="54.5"/>
+                                                                <subviews>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HL9-Xm-Q2k" customClass="UIImageView">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="54" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vb0-xo-QQH" customClass="UIImageView">
+                                                                        <rect key="frame" x="58" y="0.0" width="54.5" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6C3-Rf-lPT" customClass="UIImageView">
+                                                                        <rect key="frame" x="116.5" y="0.0" width="54" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                </subviews>
+                                                            </stackView>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="syR-p3-CiB">
+                                                                <rect key="frame" x="0.0" y="116.5" width="170.5" height="54"/>
+                                                                <subviews>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eZv-IO-FRe" customClass="UIImageView">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="54" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="U9P-y6-iyr" customClass="UIImageView">
+                                                                        <rect key="frame" x="58" y="0.0" width="54.5" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Umg-QC-SLE" customClass="UIImageView">
+                                                                        <rect key="frame" x="116.5" y="0.0" width="54" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                </subviews>
+                                                            </stackView>
+                                                        </subviews>
+                                                    </stackView>
+                                                </subviews>
+                                            </stackView>
+                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="4Sr-lG-JNg">
+                                                <rect key="frame" x="0.0" y="178.5" width="528" height="171"/>
+                                                <subviews>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="LCy-ck-XON">
+                                                        <rect key="frame" x="0.0" y="0.0" width="170.5" height="171"/>
+                                                        <subviews>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="EK4-7G-Y89">
+                                                                <rect key="frame" x="0.0" y="0.0" width="170.5" height="54.5"/>
+                                                                <subviews>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gYg-6T-nre" customClass="UIImageView">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="54" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0Xl-Hm-ocw" customClass="UIImageView">
+                                                                        <rect key="frame" x="58" y="0.0" width="54.5" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DpI-pe-p9B" customClass="UIImageView">
+                                                                        <rect key="frame" x="116.5" y="0.0" width="54" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                </subviews>
+                                                            </stackView>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="3ao-zA-G53">
+                                                                <rect key="frame" x="0.0" y="58.5" width="170.5" height="54"/>
+                                                                <subviews>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pvT-sm-f7Y" customClass="UIImageView">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="54" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RTL-Bm-GYC" customClass="UIImageView">
+                                                                        <rect key="frame" x="58" y="0.0" width="54.5" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eKw-M7-6io" customClass="UIImageView">
+                                                                        <rect key="frame" x="116.5" y="0.0" width="54" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                </subviews>
+                                                            </stackView>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="Jac-Ae-Zun">
+                                                                <rect key="frame" x="0.0" y="116.5" width="170.5" height="54.5"/>
+                                                                <subviews>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bhr-ZX-0AD" customClass="UIImageView">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="54" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="g45-Dj-BzI" customClass="UIImageView">
+                                                                        <rect key="frame" x="58" y="0.0" width="54.5" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9bH-pz-jIV" customClass="UIImageView">
+                                                                        <rect key="frame" x="116.5" y="0.0" width="54" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                </subviews>
+                                                            </stackView>
+                                                        </subviews>
+                                                    </stackView>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="48u-7T-kld">
+                                                        <rect key="frame" x="178.5" y="0.0" width="171" height="171"/>
+                                                        <subviews>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="86n-iw-5o2">
+                                                                <rect key="frame" x="0.0" y="0.0" width="171" height="54.5"/>
+                                                                <subviews>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gFi-PW-cRB" customClass="UIImageView">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="54.5" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QcJ-ef-SKx" customClass="UIImageView">
+                                                                        <rect key="frame" x="58.5" y="0.0" width="54" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3Cu-Be-1qU" customClass="UIImageView">
+                                                                        <rect key="frame" x="116.5" y="0.0" width="54.5" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                </subviews>
+                                                            </stackView>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="60P-cg-nxZ">
+                                                                <rect key="frame" x="0.0" y="58.5" width="171" height="54"/>
+                                                                <subviews>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="y7I-rQ-X7E" customClass="UIImageView">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="54.5" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NqE-VK-j2C" customClass="UIImageView">
+                                                                        <rect key="frame" x="58.5" y="0.0" width="54" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Bic-DW-5v1" customClass="UIImageView">
+                                                                        <rect key="frame" x="116.5" y="0.0" width="54.5" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                </subviews>
+                                                            </stackView>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="CdX-yu-mic">
+                                                                <rect key="frame" x="0.0" y="116.5" width="171" height="54.5"/>
+                                                                <subviews>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MiV-VS-6a4" customClass="UIImageView">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="54.5" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TKC-aZ-nFH" customClass="UIImageView">
+                                                                        <rect key="frame" x="58.5" y="0.0" width="54" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Prk-Th-GpG" customClass="UIImageView">
+                                                                        <rect key="frame" x="116.5" y="0.0" width="54.5" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                </subviews>
+                                                            </stackView>
+                                                        </subviews>
+                                                    </stackView>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="tcc-2Y-yw8">
+                                                        <rect key="frame" x="357.5" y="0.0" width="170.5" height="171"/>
+                                                        <subviews>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="NpL-Ab-ZG5">
+                                                                <rect key="frame" x="0.0" y="0.0" width="170.5" height="54.5"/>
+                                                                <subviews>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="N8j-9e-ud9" customClass="UIImageView">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="54" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="msO-i8-sdt" customClass="UIImageView">
+                                                                        <rect key="frame" x="58" y="0.0" width="54.5" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cJp-l5-WP6" customClass="UIImageView">
+                                                                        <rect key="frame" x="116.5" y="0.0" width="54" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                </subviews>
+                                                            </stackView>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="yIS-Uy-JSF">
+                                                                <rect key="frame" x="0.0" y="58.5" width="170.5" height="54"/>
+                                                                <subviews>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HlR-z6-tew" customClass="UIImageView">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="54" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lrz-Zx-q6Y" customClass="UIImageView">
+                                                                        <rect key="frame" x="58" y="0.0" width="54.5" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OeB-FQ-4e9" customClass="UIImageView">
+                                                                        <rect key="frame" x="116.5" y="0.0" width="54" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                </subviews>
+                                                            </stackView>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="Y7h-Eo-3Gk">
+                                                                <rect key="frame" x="0.0" y="116.5" width="170.5" height="54.5"/>
+                                                                <subviews>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wvy-gJ-ilp" customClass="UIImageView">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="54" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Gpw-hf-kVv" customClass="UIImageView">
+                                                                        <rect key="frame" x="58" y="0.0" width="54.5" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1jM-FL-yOl" customClass="UIImageView">
+                                                                        <rect key="frame" x="116.5" y="0.0" width="54" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                </subviews>
+                                                            </stackView>
+                                                        </subviews>
+                                                    </stackView>
+                                                </subviews>
+                                            </stackView>
+                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="rm4-83-Npl">
+                                                <rect key="frame" x="0.0" y="357.5" width="528" height="170.5"/>
+                                                <subviews>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="g5C-hE-Rio">
+                                                        <rect key="frame" x="0.0" y="0.0" width="170.5" height="170.5"/>
+                                                        <subviews>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="Vcg-Nd-DNb">
+                                                                <rect key="frame" x="0.0" y="0.0" width="170.5" height="54"/>
+                                                                <subviews>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TtQ-dW-YAd" customClass="UIImageView">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="54" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QER-aJ-FsX" customClass="UIImageView">
+                                                                        <rect key="frame" x="58" y="0.0" width="54.5" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jAl-Xk-Xlm" customClass="UIImageView">
+                                                                        <rect key="frame" x="116.5" y="0.0" width="54" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                </subviews>
+                                                            </stackView>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="Bdg-06-WrN">
+                                                                <rect key="frame" x="0.0" y="58" width="170.5" height="54.5"/>
+                                                                <subviews>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QIy-39-rD2" customClass="UIImageView">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="54" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lQn-10-sI8" customClass="UIImageView">
+                                                                        <rect key="frame" x="58" y="0.0" width="54.5" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uot-Pa-gIK" customClass="UIImageView">
+                                                                        <rect key="frame" x="116.5" y="0.0" width="54" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                </subviews>
+                                                            </stackView>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="vgj-zN-lBa">
+                                                                <rect key="frame" x="0.0" y="116.5" width="170.5" height="54"/>
+                                                                <subviews>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NQn-Fr-pEd" customClass="UIImageView">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="54" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Y7w-wb-cFn" customClass="UIImageView">
+                                                                        <rect key="frame" x="58" y="0.0" width="54.5" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="D27-gq-j4R" customClass="UIImageView">
+                                                                        <rect key="frame" x="116.5" y="0.0" width="54" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                </subviews>
+                                                            </stackView>
+                                                        </subviews>
+                                                    </stackView>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="Evd-Hw-MDa">
+                                                        <rect key="frame" x="178.5" y="0.0" width="171" height="170.5"/>
+                                                        <subviews>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="YR5-g7-DjZ">
+                                                                <rect key="frame" x="0.0" y="0.0" width="171" height="54"/>
+                                                                <subviews>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lvu-b8-COa" customClass="UIImageView">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="54.5" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HeG-s5-p2t" customClass="UIImageView">
+                                                                        <rect key="frame" x="58.5" y="0.0" width="54" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Pqq-Y5-bgV" customClass="UIImageView">
+                                                                        <rect key="frame" x="116.5" y="0.0" width="54.5" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                </subviews>
+                                                            </stackView>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="g8J-ll-GYF">
+                                                                <rect key="frame" x="0.0" y="58" width="171" height="54.5"/>
+                                                                <subviews>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tYu-8I-8B0" customClass="UIImageView">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="54.5" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qHI-az-NQA" customClass="UIImageView">
+                                                                        <rect key="frame" x="58.5" y="0.0" width="54" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="K3d-vK-nlq" customClass="UIImageView">
+                                                                        <rect key="frame" x="116.5" y="0.0" width="54.5" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                </subviews>
+                                                            </stackView>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="iUE-ei-lOt">
+                                                                <rect key="frame" x="0.0" y="116.5" width="171" height="54"/>
+                                                                <subviews>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cii-Sh-K9E" customClass="UIImageView">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="54.5" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RhI-ze-ugd" customClass="UIImageView">
+                                                                        <rect key="frame" x="58.5" y="0.0" width="54" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="d2h-IH-OUa" customClass="UIImageView">
+                                                                        <rect key="frame" x="116.5" y="0.0" width="54.5" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                </subviews>
+                                                            </stackView>
+                                                        </subviews>
+                                                    </stackView>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="q7f-bh-xxn">
+                                                        <rect key="frame" x="357.5" y="0.0" width="170.5" height="170.5"/>
+                                                        <subviews>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="PEG-RI-GA1">
+                                                                <rect key="frame" x="0.0" y="0.0" width="170.5" height="54"/>
+                                                                <subviews>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Kd6-1u-CaG" customClass="UIImageView">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="54" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GRw-aq-0dh" customClass="UIImageView">
+                                                                        <rect key="frame" x="58" y="0.0" width="54.5" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fYL-71-6zA" customClass="UIImageView">
+                                                                        <rect key="frame" x="116.5" y="0.0" width="54" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                </subviews>
+                                                            </stackView>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="bab-f3-t8t">
+                                                                <rect key="frame" x="0.0" y="58" width="170.5" height="54.5"/>
+                                                                <subviews>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="h34-zZ-CWo" customClass="UIImageView">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="54" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bII-cP-vRq" customClass="UIImageView">
+                                                                        <rect key="frame" x="58" y="0.0" width="54.5" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0G0-4Y-CtD" customClass="UIImageView">
+                                                                        <rect key="frame" x="116.5" y="0.0" width="54" height="54.5"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                </subviews>
+                                                            </stackView>
+                                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="77K-bD-dp1">
+                                                                <rect key="frame" x="0.0" y="116.5" width="170.5" height="54"/>
+                                                                <subviews>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7tX-Zf-cPn" customClass="UIImageView">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="54" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mu9-k0-qoW" customClass="UIImageView">
+                                                                        <rect key="frame" x="58" y="0.0" width="54.5" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1lo-AC-b6I" customClass="UIImageView">
+                                                                        <rect key="frame" x="116.5" y="0.0" width="54" height="54"/>
+                                                                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    </view>
+                                                                </subviews>
+                                                            </stackView>
+                                                        </subviews>
+                                                    </stackView>
+                                                </subviews>
+                                            </stackView>
+                                        </subviews>
+                                        <color key="backgroundColor" red="0.98430997129999998" green="0.77254998679999998" blue="0.48234999179999999" alpha="1" colorSpace="calibratedRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="ED2-nC-1QA" secondAttribute="height" multiplier="1:1" id="F7A-bK-8B9"/>
+                                            <constraint firstAttribute="width" secondItem="ED2-nC-1QA" secondAttribute="height" multiplier="1:1" id="a9m-gc-hSt"/>
+                                        </constraints>
+                                        <variation key="default">
+                                            <mask key="constraints">
+                                                <exclude reference="a9m-gc-hSt"/>
+                                            </mask>
+                                        </variation>
+                                    </stackView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Aeq-2R-D3d">
+                                        <rect key="frame" x="420" y="562" width="140" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="140" id="R02-3J-ej4"/>
+                                        </constraints>
+                                        <state key="normal" title="Concede Game"/>
+                                        <connections>
+                                            <action selector="concedeGame" destination="WtD-hn-WqT" eventType="touchUpInside" id="dx2-vp-eqk"/>
+                                        </connections>
+                                    </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aw1-S6-bkt">
+                                        <rect key="frame" x="20" y="566" width="392" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="04F-rk-zs1" secondAttribute="height" multiplier="1:1" id="1sp-Al-G3v"/>
+                                    <constraint firstItem="ED2-nC-1QA" firstAttribute="top" secondItem="04F-rk-zs1" secondAttribute="top" constant="22" id="2KM-of-3Hu"/>
+                                    <constraint firstItem="Aeq-2R-D3d" firstAttribute="top" secondItem="ED2-nC-1QA" secondAttribute="bottom" constant="12" id="4hv-IQ-nQv"/>
+                                    <constraint firstAttribute="trailing" secondItem="Aeq-2R-D3d" secondAttribute="trailing" constant="40" id="9Yh-wW-Id2"/>
+                                    <constraint firstAttribute="bottom" secondItem="Aeq-2R-D3d" secondAttribute="bottom" constant="8" id="Bsa-be-xnL"/>
+                                    <constraint firstItem="ED2-nC-1QA" firstAttribute="centerX" secondItem="04F-rk-zs1" secondAttribute="centerX" id="BtD-6k-XU8"/>
+                                    <constraint firstItem="aw1-S6-bkt" firstAttribute="centerY" secondItem="Aeq-2R-D3d" secondAttribute="centerY" id="E4x-hA-a3Z"/>
+                                    <constraint firstItem="ED2-nC-1QA" firstAttribute="width" secondItem="04F-rk-zs1" secondAttribute="width" priority="500" id="Hvi-jE-QNn"/>
+                                    <constraint firstItem="ED2-nC-1QA" firstAttribute="width" secondItem="04F-rk-zs1" secondAttribute="height" multiplier="15:28" id="Jc8-tN-1h6"/>
+                                    <constraint firstItem="ED2-nC-1QA" firstAttribute="height" secondItem="04F-rk-zs1" secondAttribute="height" priority="500" id="Qk3-jQ-4ef"/>
+                                    <constraint firstItem="Aeq-2R-D3d" firstAttribute="centerX" secondItem="04F-rk-zs1" secondAttribute="centerX" id="S0T-8n-q1w"/>
+                                    <constraint firstItem="aw1-S6-bkt" firstAttribute="leading" secondItem="04F-rk-zs1" secondAttribute="leading" constant="20" id="SQ6-EL-NZd"/>
+                                    <constraint firstItem="ED2-nC-1QA" firstAttribute="width" relation="lessThanOrEqual" secondItem="04F-rk-zs1" secondAttribute="width" id="aUq-gs-UYL"/>
+                                    <constraint firstItem="ED2-nC-1QA" firstAttribute="height" relation="lessThanOrEqual" secondItem="04F-rk-zs1" secondAttribute="height" id="l7m-Te-uoK"/>
+                                    <constraint firstItem="Aeq-2R-D3d" firstAttribute="leading" secondItem="aw1-S6-bkt" secondAttribute="trailing" constant="8" id="whN-jF-of8"/>
+                                </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="Jc8-tN-1h6"/>
+                                        <exclude reference="S0T-8n-q1w"/>
+                                    </mask>
+                                </variation>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="04F-rk-zs1" firstAttribute="centerY" secondItem="EC0-eV-HnJ" secondAttribute="centerY" id="7TF-sq-hgH"/>
+                            <constraint firstItem="04F-rk-zs1" firstAttribute="width" relation="lessThanOrEqual" secondItem="EC0-eV-HnJ" secondAttribute="width" id="I21-eb-HD8"/>
+                            <constraint firstItem="04F-rk-zs1" firstAttribute="height" relation="lessThanOrEqual" secondItem="EC0-eV-HnJ" secondAttribute="height" id="eYH-ij-byv"/>
+                            <constraint firstItem="04F-rk-zs1" firstAttribute="height" secondItem="EC0-eV-HnJ" secondAttribute="height" priority="500" id="f0E-pT-CMu"/>
+                            <constraint firstItem="04F-rk-zs1" firstAttribute="centerX" secondItem="EC0-eV-HnJ" secondAttribute="centerX" id="s6N-Cd-9cS"/>
+                            <constraint firstItem="04F-rk-zs1" firstAttribute="width" secondItem="EC0-eV-HnJ" secondAttribute="width" priority="500" id="zrh-lX-2LT"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="concedeButton" destination="Aeq-2R-D3d" id="cg2-Ri-b06"/>
+                        <outlet property="fieldStack" destination="ED2-nC-1QA" id="hkt-x6-VBR"/>
+                        <outlet property="statusLabel" destination="aw1-S6-bkt" id="992-HV-zVb"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="L84-Fj-q77" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1864" y="967"/>
+        </scene>
+    </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="tAP-9I-80M"/>
+    </inferredMetricsTieBreakers>
+</document>
