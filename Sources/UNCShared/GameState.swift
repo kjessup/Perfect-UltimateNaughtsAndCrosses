@@ -6,57 +6,57 @@
 //  Copyright © 2016 PerfectlySoft. All rights reserved.
 //
 
-let ultimateSlotCount = 3
-let invalidId = -1
+public let ultimateSlotCount = 3
+public let invalidId = -1
 
-enum UltimateState {
+public enum UltimateState {
 	/// no game
-	case None
+	case none
 	// waiting for opponent
-	case Waiting
+	case waiting
 	// who won, current field
-	case GameOver(PieceType, Field)
+	case gameOver(PieceType, Field)
 	// whose turn is it, required play board, current state
-	case InPlay(PieceType, GridIndex, Field)
+	case inPlay(PieceType, GridIndex, Field)
 	// current player made invalid move
-	case InvalidMove
+	case invalidMove
 	
 	private enum UltimateStateId: Int {
-		case NoneId, WaitingId, GameOverId, InPlayId, InvalidMoveId
+		case noneId, waitingId, gameOverId, inPlayId, invalidMoveId
 	}
 	
 	private var serialId: Int {
 		switch self {
-		case .None:			return UltimateStateId.NoneId.rawValue
-		case .Waiting:		return UltimateStateId.WaitingId.rawValue
-		case .GameOver:		return UltimateStateId.GameOverId.rawValue
-		case .InPlay:		return UltimateStateId.InPlayId.rawValue
-		case .InvalidMove:	return UltimateStateId.InvalidMoveId.rawValue
+		case .none:			return UltimateStateId.noneId.rawValue
+		case .waiting:		return UltimateStateId.waitingId.rawValue
+		case .gameOver:		return UltimateStateId.gameOverId.rawValue
+		case .inPlay:		return UltimateStateId.inPlayId.rawValue
+		case .invalidMove:	return UltimateStateId.invalidMoveId.rawValue
 		}
 	}
 	
-	func serialize() -> String {
+	public func serialize() -> String {
 		switch self {
-		case .None, .InvalidMove, .Waiting:
+		case .none, .invalidMove, .waiting:
 			return "\(self.serialId)"
-		case .GameOver(let piece, let field):
+		case .gameOver(let piece, let field):
 			return "\(self.serialId)\(piece.serialize())\(field.serialize())"
-		case .InPlay(let piece, let index, let field):
-			return "\(self.serialId)\(piece.serialize())\(self.serialize(index))\(field.serialize())"
+		case .inPlay(let piece, let index, let field):
+			return "\(self.serialId)\(piece.serialize())\(self.serialize(gridIndex: index))\(field.serialize())"
 		}
 	}
 	
 	func serialize(gridIndex: GridIndex) -> String {
 		var s = ""
 		if gridIndex.x == invalidId {
-			s.appendContentsOf("-")
+			s.append("-")
 		} else {
-			s.appendContentsOf("\(gridIndex.x)")
+			s.append("\(gridIndex.x)")
 		}
 		if gridIndex.y == invalidId {
-			s.appendContentsOf("-")
+			s.append("-")
 		} else {
-			s.appendContentsOf("\(gridIndex.y)")
+			s.append("\(gridIndex.y)")
 		}
 		return s
 	}
@@ -70,51 +70,51 @@ enum UltimateState {
 	static func deserialize(source: String) -> UltimateState? {
 		if let id = Int(String(source[source.startIndex])), stateId = UltimateStateId(rawValue: id) {
 			switch stateId {
-			case .NoneId:
-				return .None
-			case .WaitingId:
-				return .Waiting
-			case .GameOverId:
-				if let pieceTypeInt = Int(String(source[source.startIndex.advancedBy(1)])),
+			case .noneId:
+				return .none
+			case .waitingId:
+				return .waiting
+			case .gameOverId:
+				if let pieceTypeInt = Int(String(source[source.index(after: source.startIndex)])),
 					pieceType = PieceType(rawValue: pieceTypeInt) {
 					
-					let fieldString = source[source.startIndex.advancedBy(2)..<source.endIndex]
-					if let field = Field.deserialize(fieldString) {
-						return .GameOver(pieceType, field)
+					let fieldString = source[source.index(source.startIndex, offsetBy: 2)..<source.endIndex]
+					if let field = Field.deserialize(source: fieldString) {
+						return .gameOver(pieceType, field)
 					}
 				}
-			case .InPlayId:
-				if let pieceTypeInt = Int(String(source[source.startIndex.advancedBy(1)])),
+			case .inPlayId:
+				if let pieceTypeInt = Int(String(source[source.index(after: source.startIndex)])),
 					pieceType = PieceType(rawValue: pieceTypeInt) {
 					
-					let c1 = String(source[source.startIndex.advancedBy(2)])
-					let c2 = String(source[source.startIndex.advancedBy(3)])
+					let c1 = String(source[source.index(source.startIndex, offsetBy: 2)])
+					let c2 = String(source[source.index(source.startIndex, offsetBy: 3)])
 					
-					let gridIndex = self.deserialize(c1, idxY: c2)
+					let gridIndex = self.deserialize(idxX: c1, idxY: c2)
 					
-					let fieldString = source[source.startIndex.advancedBy(4)..<source.endIndex]
-					if let field = Field.deserialize(fieldString) {
-						return .InPlay(pieceType, gridIndex, field)
+					let fieldString = source[source.index(source.startIndex, offsetBy: 4)..<source.endIndex]
+					if let field = Field.deserialize(source: fieldString) {
+						return .inPlay(pieceType, gridIndex, field)
 					}
 				}
-			case .InvalidMoveId:
-				return .InvalidMove
+			case .invalidMoveId:
+				return .invalidMove
 			}
 		}
 		return nil
 	}
 }
 
-enum AsyncResponse {
-	case Error(Int, String)
-	case SuccessEmpty()
-	case SuccessInt(Int)
-	case SuccessInt2(Int, Int)
-	case SuccessString(String)
-	case SuccessState(UltimateState)
+public enum AsyncResponse {
+	case error(Int, String)
+	case successEmpty()
+	case successInt(Int)
+	case successInt2(Int, Int)
+	case successString(String)
+	case successState(UltimateState)
 }
 
-protocol GameState {
+public protocol GameState {
 	func createPlayer(nick: String, response: (AsyncResponse) -> ())
 	func getPlayerNick(playerId: Int, response: (AsyncResponse) -> ())
 	func getCurrentState(playerId: Int, response: (AsyncResponse) -> ())

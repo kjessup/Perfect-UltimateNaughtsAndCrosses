@@ -8,6 +8,7 @@
 
 import PerfectLib
 import SQLite
+import UNCShared
 
 let simpleBotId = -2
 
@@ -22,23 +23,23 @@ struct GameStateServer: GameState {
 				sqlite.close()
 			}
 			// not sure what all to put in here yet
-			try sqlite.execute("CREATE TABLE IF NOT EXISTS players (" +
+			try sqlite.execute(statement: "CREATE TABLE IF NOT EXISTS players (" +
 				"id INTEGER PRIMARY KEY, nick TEXT)")
-			try sqlite.execute("CREATE UNIQUE INDEX IF NOT EXISTS playersidx ON players (" +
+			try sqlite.execute(statement: "CREATE UNIQUE INDEX IF NOT EXISTS playersidx ON players (" +
 				"nick)")
 			
 			// state indicates whose turn it is now
 			// x and y, if not invalid, indicate which board must be played on
-			try sqlite.execute("CREATE TABLE IF NOT EXISTS games (" +
+			try sqlite.execute(statement: "CREATE TABLE IF NOT EXISTS games (" +
 				"id INTEGER PRIMARY KEY, state INTEGER, player_ex INTEGER, player_oh INTEGER, x INTEGER, y INTEGER)")
 			
-			try sqlite.execute("CREATE TABLE IF NOT EXISTS fields (" +
+			try sqlite.execute(statement: "CREATE TABLE IF NOT EXISTS fields (" +
 				"id INTEGER PRIMARY KEY, id_game INTEGER)")
 			
-			try sqlite.execute("CREATE TABLE IF NOT EXISTS boards (" +
+			try sqlite.execute(statement: "CREATE TABLE IF NOT EXISTS boards (" +
 				"id INTEGER PRIMARY KEY, id_field INTEGER, x INTEGER, y INTEGER, owner INTEGER)")
 			
-			try sqlite.execute("CREATE TABLE IF NOT EXISTS slots (" +
+			try sqlite.execute(statement: "CREATE TABLE IF NOT EXISTS slots (" +
 				"id INTEGER PRIMARY KEY, id_board INTEGER, x INTEGER, y INTEGER, owner INTEGER)")
 			
 		} catch {
@@ -70,9 +71,9 @@ struct GameStateServer: GameState {
 			defer {
 				sqlite.close()
 			}
-			try sqlite.execute("INSERT INTO players (nick) VALUES (:1)") {
+			try sqlite.execute(statement: "INSERT INTO players (nick) VALUES (:1)") {
 				(stmt:SQLiteStmt) -> () in
-				try stmt.bind(1, nick)
+                try stmt.bind(position: 1, nick)
 			}
 			let playerId = sqlite.lastInsertRowID()
 			return playerId
@@ -87,28 +88,28 @@ struct GameStateServer: GameState {
 			defer {
 				sqlite.close()
 			}
-			try sqlite.forEachRow("SELECT nick FROM players WHERE id = \(playerId)") {
+			try sqlite.forEachRow(statement: "SELECT nick FROM players WHERE id = \(playerId)") {
 				(stmt:SQLiteStmt, Int) -> () in
 				
-				playerNick = stmt.columnText(0)
+				playerNick = stmt.columnText(position: 0)
 			}
 		} catch { }
 		return playerNick
 	}
 	
 	// Returns tuple of Game id and field id
-	func createGame(playerX playerX: Int, playerO: Int) -> (Int, Int) {
+	func createGame(playerX: Int, playerO: Int) -> (Int, Int) {
 		do {
 			let sqlite = self.db
 			defer {
 				sqlite.close()
 			}
-			try sqlite.execute("BEGIN")
-			try sqlite.execute("INSERT INTO games (state, player_ex, player_oh, x, y) VALUES (\(PieceType.Ex.rawValue), \(playerX), \(playerO), \(invalidId), \(invalidId)) ")
+			try sqlite.execute(statement: "BEGIN")
+			try sqlite.execute(statement: "INSERT INTO games (state, player_ex, player_oh, x, y) VALUES (\(PieceType.ex.rawValue), \(playerX), \(playerO), \(invalidId), \(invalidId)) ")
 			let gameId = sqlite.lastInsertRowID()
-			try sqlite.execute("INSERT INTO fields (id_game) VALUES (\(gameId))")
+			try sqlite.execute(statement: "INSERT INTO fields (id_game) VALUES (\(gameId))")
 			let fieldId = sqlite.lastInsertRowID()
-			try sqlite.execute("COMMIT")
+			try sqlite.execute(statement: "COMMIT")
 			return (gameId, fieldId)
 		} catch { }
 		return (invalidId, invalidId)
@@ -120,25 +121,25 @@ struct GameStateServer: GameState {
 		defer {
 			sqlite.close()
 		}
-		return getActiveGameForPlayer(sqlite, playerId: playerId)
+		return getActiveGameForPlayer(sqlite: sqlite, playerId: playerId)
 	}
 	
 	// returns the game and the player's piece type
 	private func getActiveGameForPlayer(sqlite: SQLite, playerId: Int) -> (Int, PieceType) {
 		var gameId = invalidId
-		var piece = PieceType.None
+		var piece = PieceType.none
 		do {
-			try sqlite.forEachRow("SELECT id, player_ex FROM games WHERE (state != \(PieceType.ExWin.rawValue) AND state != \(PieceType.OhWin.rawValue) AND state != \(PieceType.Draw.rawValue)) AND (player_ex = \(playerId) OR player_oh = \(playerId))") {
+			try sqlite.forEachRow(statement: "SELECT id, player_ex FROM games WHERE (state != \(PieceType.exWin.rawValue) AND state != \(PieceType.ohWin.rawValue) AND state != \(PieceType.draw.rawValue)) AND (player_ex = \(playerId) OR player_oh = \(playerId))") {
 				(stmt:SQLiteStmt, Int) -> () in
 				
-				gameId = stmt.columnInt(0)
+				gameId = stmt.columnInt(position: 0)
 				
-				let ex = stmt.columnInt(1)
+				let ex = stmt.columnInt(position: 1)
 				
 				if ex == playerId {
-					piece = .Ex
+					piece = .ex
 				} else {
-					piece = .Oh
+					piece = .oh
 				}
 			}
 		} catch { }
@@ -148,61 +149,61 @@ struct GameStateServer: GameState {
 	func getBoard(gameId: Int, index: GridIndex) -> Board? {
 		// board (id INTEGER PRIMARY KEY, id_field INTEGER, x INTEGER, y INTEGER, owner INTEGER)
 		// slots (id INTEGER PRIMARY KEY, id_board INTEGER, x INTEGER, y INTEGER, owner INTEGER)
-		var pieces = [[PieceType]](repeating: [PieceType](repeating:.None, count: ultimateSlotCount), count: ultimateSlotCount)
-		var owner = PieceType.None
+		var pieces = [[PieceType]](repeating: [PieceType](repeating: .none, count: ultimateSlotCount), count: ultimateSlotCount)
+		var owner = PieceType.none
 		do {
 			let sqlite = self.db
 			defer {
 				sqlite.close()
 			}
-			let fieldId = self.getFieldId(sqlite, gameId: gameId)
+			let fieldId = self.getFieldId(sqlite: sqlite, gameId: gameId)
 			guard fieldId != invalidId else {
 				return nil
 			}
-			let boardId = self.getBoardId(sqlite, fieldId: fieldId, index: index, orInsert: false)
+			let boardId = self.getBoardId(sqlite: sqlite, fieldId: fieldId, index: index, orInsert: false)
 			guard fieldId != invalidId else {
 				return nil
 			}
-			try sqlite.forEachRow("SELECT x, y, owner FROM slots WHERE id_board = \(boardId)") {
+			try sqlite.forEachRow(statement: "SELECT x, y, owner FROM slots WHERE id_board = \(boardId)") {
 				(stmt:SQLiteStmt, Int) -> () in
 				
-				let x = stmt.columnInt(0)
-				let y = stmt.columnInt(1)
-				let owner = PieceType(rawValue: stmt.columnInt(2))!
+				let x = stmt.columnInt(position: 0)
+				let y = stmt.columnInt(position: 1)
+				let owner = PieceType(rawValue: stmt.columnInt(position: 2))!
 				
 				pieces[y][x] = owner
 			}
-			owner = self.getBoardOwner(sqlite, boardId: boardId)
+			owner = self.getBoardOwner(sqlite: sqlite, boardId: boardId)
 		} catch { }
 		return Board(slots: pieces, owner: owner)
 	}
 	
 	private func setActiveBoard(sqlite: SQLite, gameId: Int, index: GridIndex) {
 		do {
-			try sqlite.execute("UPDATE games SET x = \(index.x), y = \(index.y) WHERE id = \(gameId)")
+			try sqlite.execute(statement: "UPDATE games SET x = \(index.x), y = \(index.y) WHERE id = \(gameId)")
 		} catch {}
 	}
 	
 	private func getBoard(sqlite: SQLite, fieldId: Int, index: GridIndex) -> Board? {
 		// board (id INTEGER PRIMARY KEY, id_field INTEGER, x INTEGER, y INTEGER, owner INTEGER)
 		// slots (id INTEGER PRIMARY KEY, id_board INTEGER, x INTEGER, y INTEGER, owner INTEGER)
-		var pieces = [[PieceType]](repeating: [PieceType](repeating:.None, count: ultimateSlotCount), count: ultimateSlotCount)
-		var owner = PieceType.None
+		var pieces = [[PieceType]](repeating: [PieceType](repeating:.none, count: ultimateSlotCount), count: ultimateSlotCount)
+		var owner = PieceType.none
 		do {
-			let boardId = self.getBoardId(sqlite, fieldId: fieldId, index: index, orInsert: false)
+			let boardId = self.getBoardId(sqlite: sqlite, fieldId: fieldId, index: index, orInsert: false)
 			guard fieldId != invalidId else {
 				return nil
 			}
-			try sqlite.forEachRow("SELECT x, y, owner FROM slots WHERE id_board = \(boardId)") {
+			try sqlite.forEachRow(statement: "SELECT x, y, owner FROM slots WHERE id_board = \(boardId)") {
 				(stmt:SQLiteStmt, Int) -> () in
 				
-				let x = stmt.columnInt(0)
-				let y = stmt.columnInt(1)
-				let owner = PieceType(rawValue: stmt.columnInt(2))!
+				let x = stmt.columnInt(position: 0)
+				let y = stmt.columnInt(position: 1)
+				let owner = PieceType(rawValue: stmt.columnInt(position: 2))!
 				
 				pieces[y][x] = owner
 			}
-			owner = self.getBoardOwner(sqlite, boardId: boardId)
+			owner = self.getBoardOwner(sqlite: sqlite, boardId: boardId)
 		} catch { }
 		return Board(slots: pieces, owner: owner)
 	}
@@ -212,19 +213,19 @@ struct GameStateServer: GameState {
 		defer {
 			sqlite.close()
 		}
-		return self.getField(sqlite, gameId: gameId)
+		return self.getField(sqlite: sqlite, gameId: gameId)
 	}
 	
 	private func getField(sqlite: SQLite, gameId: Int) -> Field? {
 		var boards = [[Board]]()
-		let fieldId = self.getFieldId(sqlite, gameId: gameId)
+		let fieldId = self.getFieldId(sqlite: sqlite, gameId: gameId)
 		guard fieldId != invalidId else {
 			return nil
 		}
 		for y in 0..<ultimateSlotCount {
 			var boardRow = [Board]()
 			for x in 0..<ultimateSlotCount {
-				if let board = self.getBoard(sqlite, fieldId: fieldId, index: (x, y)) {
+				if let board = self.getBoard(sqlite: sqlite, fieldId: fieldId, index: (x, y)) {
 					boardRow.append(board)
 				}
 			}
@@ -234,7 +235,7 @@ struct GameStateServer: GameState {
 	}
 	
 	func getBoardId(gameId: Int, index: GridIndex) -> Int {
-		guard validX(index.x) && validY(index.y) else {
+		guard validX(x: index.x) && validY(y: index.y) else {
 			return invalidId
 		}
 		var boardId = invalidId
@@ -243,17 +244,17 @@ struct GameStateServer: GameState {
 			defer {
 				sqlite.close()
 			}
-			try sqlite.execute("BEGIN")
-			let fieldId = self.getFieldId(sqlite, gameId: gameId)
-			try sqlite.forEachRow("SELECT id FROM boards WHERE id_field = \(fieldId) AND x = \(index.x) AND y = \(index.y)") {
+			try sqlite.execute(statement: "BEGIN")
+			let fieldId = self.getFieldId(sqlite: sqlite, gameId: gameId)
+			try sqlite.forEachRow(statement: "SELECT id FROM boards WHERE id_field = \(fieldId) AND x = \(index.x) AND y = \(index.y)") {
 				(stmt:SQLiteStmt, Int) -> () in
-				boardId = stmt.columnInt(0)
+				boardId = stmt.columnInt(position: 0)
 			}
 			if boardId == invalidId {
-				try sqlite.execute("INSERT INTO boards (id_field, x, y, owner) VALUES (\(fieldId), \(index.x), \(index.y), 0)")
+				try sqlite.execute(statement: "INSERT INTO boards (id_field, x, y, owner) VALUES (\(fieldId), \(index.x), \(index.y), 0)")
 				boardId = sqlite.lastInsertRowID()
 			}
-			try sqlite.execute("COMMIT")
+			try sqlite.execute(statement: "COMMIT")
 		} catch { }
 		return boardId
 	}
@@ -261,12 +262,12 @@ struct GameStateServer: GameState {
 	private func getBoardId(sqlite: SQLite, fieldId: Int, index: GridIndex, orInsert: Bool) -> Int {
 		var boardId = invalidId
 		do {
-			try sqlite.forEachRow("SELECT id FROM boards WHERE id_field = \(fieldId) AND x = \(index.x) AND y = \(index.y)") {
+			try sqlite.forEachRow(statement: "SELECT id FROM boards WHERE id_field = \(fieldId) AND x = \(index.x) AND y = \(index.y)") {
 				(stmt:SQLiteStmt, Int) -> () in
-				boardId = stmt.columnInt(0)
+				boardId = stmt.columnInt(position: 0)
 			}
 			if orInsert && boardId == invalidId {
-				try sqlite.execute("INSERT INTO boards (id_field, x, y, owner) VALUES (\(fieldId), \(index.x), \(index.y), 0)")
+				try sqlite.execute(statement: "INSERT INTO boards (id_field, x, y, owner) VALUES (\(fieldId), \(index.x), \(index.y), 0)")
 				boardId = sqlite.lastInsertRowID()
 			}
 		} catch { }
@@ -276,16 +277,16 @@ struct GameStateServer: GameState {
 	private func getFieldId(sqlite: SQLite, gameId: Int) -> Int {
 		var fieldId = invalidId
 		do {
-			try sqlite.forEachRow("SELECT id FROM fields WHERE id_game = \(gameId)") {
+			try sqlite.forEachRow(statement: "SELECT id FROM fields WHERE id_game = \(gameId)") {
 				(stmt:SQLiteStmt, Int) -> () in
-				fieldId = stmt.columnInt(0)
+				fieldId = stmt.columnInt(position: 0)
 			}
 		} catch { }
 		return fieldId
 	}
 	
 	func getSlotId(boardId: Int, index: GridIndex) -> Int {
-		guard validX(index.x) && validY(index.y) else {
+		guard validX(x: index.x) && validY(y: index.y) else {
 			return invalidId
 		}
 		var slotId = invalidId
@@ -294,25 +295,25 @@ struct GameStateServer: GameState {
 			defer {
 				sqlite.close()
 			}
-			try sqlite.execute("BEGIN")
-			slotId = self.getSlotId(sqlite, boardId: boardId, index: index)
-			try sqlite.execute("COMMIT")
+			try sqlite.execute(statement: "BEGIN")
+			slotId = self.getSlotId(sqlite: sqlite, boardId: boardId, index: index)
+			try sqlite.execute(statement: "COMMIT")
 		} catch { }
 		return slotId
 	}
 	
 	func getSlotId(sqlite: SQLite, boardId: Int, index: GridIndex) -> Int {
-		guard validX(index.x) && validY(index.y) else {
+		guard validX(x: index.x) && validY(y: index.y) else {
 			return invalidId
 		}
 		var slotId = invalidId
 		do {
-			try sqlite.forEachRow("SELECT id FROM slots WHERE id_board = \(boardId) AND x = \(index.x) AND y = \(index.y)") {
+			try sqlite.forEachRow(statement: "SELECT id FROM slots WHERE id_board = \(boardId) AND x = \(index.x) AND y = \(index.y)") {
 				(stmt:SQLiteStmt, Int) -> () in
-				slotId = stmt.columnInt(0)
+				slotId = stmt.columnInt(position: 0)
 			}
 			if slotId == invalidId {
-				try sqlite.execute("INSERT INTO slots (id_board, x, y, owner) VALUES (\(boardId), \(index.x), \(index.y), 0)")
+				try sqlite.execute(statement: "INSERT INTO slots (id_board, x, y, owner) VALUES (\(boardId), \(index.x), \(index.y), 0)")
 				slotId = sqlite.lastInsertRowID()
 			}
 		} catch { }
@@ -321,39 +322,39 @@ struct GameStateServer: GameState {
 	
 	// returns the actual winner
 	func setGameWinner(gameId: Int, to: PieceType) -> PieceType {
-		let winner = to.rawValue == PieceType.Ex.rawValue ? PieceType.ExWin : PieceType.OhWin
-		var returnedWinner = PieceType.None
+		let winner = to.rawValue == PieceType.ex.rawValue ? PieceType.exWin : PieceType.ohWin
+		var returnedWinner = PieceType.none
 		do {
 			let sqlite = self.db
 			defer {
 				sqlite.close()
 			}
-			try sqlite.execute("BEGIN")
-			returnedWinner = self.setGameWinner(sqlite, gameId: gameId, to: to)
-			try sqlite.execute("COMMIT")
+			try sqlite.execute(statement: "BEGIN")
+			returnedWinner = self.setGameWinner(sqlite: sqlite, gameId: gameId, to: to)
+			try sqlite.execute(statement: "COMMIT")
 		} catch { }
 		return returnedWinner
 	}
 	
 	private func setGameWinner(sqlite: SQLite, gameId: Int, to: PieceType) -> PieceType {
-		var winner = PieceType.None
+		var winner = PieceType.none
 		switch to {
-		case .Ex:
-			winner = .ExWin
-		case .Oh:
-			winner = .OhWin
-		case .Draw:
-			winner = .Draw
+		case .ex:
+			winner = .exWin
+		case .oh:
+			winner = .ohWin
+		case .draw:
+			winner = .draw
 		default:
 			()
 		}
-		var returnedWinner = PieceType.None
+		var returnedWinner = PieceType.none
 		do {
-			let (_, currentPlayer, _, _) = self.getCurrentPlayer(sqlite, gameId: gameId)
+			let (_, currentPlayer, _, _) = self.getCurrentPlayer(sqlite: sqlite, gameId: gameId)
 			if currentPlayer.isWinner { // already has a winner
 				returnedWinner = currentPlayer
 			} else {
-				try sqlite.execute("UPDATE games SET state = \(winner.rawValue) WHERE id = \(gameId)")
+				try sqlite.execute(statement: "UPDATE games SET state = \(winner.rawValue) WHERE id = \(gameId)")
 				returnedWinner = winner
 			}
 		} catch { }
@@ -365,41 +366,41 @@ struct GameStateServer: GameState {
 		defer {
 			sqlite.close()
 		}
-		return self.getGameWinner(sqlite, gameId: gameId)
+		return self.getGameWinner(sqlite: sqlite, gameId: gameId)
 	}
 	
 	private func getGameWinner(sqlite: SQLite, gameId: Int) -> PieceType {
-		let winCheck = self.getCurrentPlayer(sqlite, gameId: gameId)
-		if winCheck.1 == .ExWin || winCheck.1 == .OhWin || winCheck.1 == .Draw {
+		let winCheck = self.getCurrentPlayer(sqlite: sqlite, gameId: gameId)
+		if winCheck.1 == .exWin || winCheck.1 == .ohWin || winCheck.1 == .draw {
 			return winCheck.1
 		}
 		
 		// no outright winner
 		// scan to see if someone has won
-		let fieldId = self.getFieldId(sqlite, gameId: gameId)
+		let fieldId = self.getFieldId(sqlite: sqlite, gameId: gameId)
 		// ex
-		if self.scanAllBoards(sqlite, fieldId: fieldId, type: .Ex) {
-			self.setGameWinner(sqlite, gameId: gameId, to: .Ex)
-			return .Ex
+		if self.scanAllBoards(sqlite: sqlite, fieldId: fieldId, type: .ex) {
+			let _ = self.setGameWinner(sqlite: sqlite, gameId: gameId, to: .ex)
+			return .ex
 		}// oh
-		else if self.scanAllBoards(sqlite, fieldId: fieldId, type: .Oh) {
-			self.setGameWinner(sqlite, gameId: gameId, to: .Oh)
-			return .Oh
+		else if self.scanAllBoards(sqlite: sqlite, fieldId: fieldId, type: .oh) {
+			let _ = self.setGameWinner(sqlite: sqlite, gameId: gameId, to: .oh)
+			return .oh
 		}
 		
 		// check for draw
 		do { // if there are non unowned boards then it's a draw
 			var count = 0
-			try sqlite.forEachRow("SELECT COUNT(*) FROM boards WHERE id_field = \(fieldId) AND owner = 0") {
+			try sqlite.forEachRow(statement: "SELECT COUNT(*) FROM boards WHERE id_field = \(fieldId) AND owner = 0") {
 				(stmt:SQLiteStmt, Int) -> () in
-				count = stmt.columnInt(0)
+				count = stmt.columnInt(position: 0)
 			}
 			if count == 0 {
-				self.setGameWinner(sqlite, gameId: gameId, to: .Draw)
-				return .Draw
+				let _ = self.setGameWinner(sqlite: sqlite, gameId: gameId, to: .draw)
+				return .draw
 			}
 		} catch {}
-		return .None
+		return .none
 	}
 	
 	// Returns tuple of player ID, piece type for next move and board on which next move must be made
@@ -408,24 +409,24 @@ struct GameStateServer: GameState {
 		defer {
 			sqlite.close()
 		}
-		return self.getCurrentPlayer(sqlite, gameId: gameId)
+		return self.getCurrentPlayer(sqlite: sqlite, gameId: gameId)
 	}
 	
 	// Returns tuple of player ID, piece type for next move and board on which next move must be made
 	private func getCurrentPlayer(sqlite: SQLite, gameId: Int) -> (Int, PieceType, Int, Int) {
-		var ret = (invalidId, PieceType.None, invalidId, invalidId)
+		var ret = (invalidId, PieceType.none, invalidId, invalidId)
 		do {
-			try sqlite.forEachRow("SELECT state, player_ex, player_oh, x, y FROM games WHERE id = \(gameId)") {
+			try sqlite.forEachRow(statement: "SELECT state, player_ex, player_oh, x, y FROM games WHERE id = \(gameId)") {
 				(stmt:SQLiteStmt, i:Int) -> () in
 				
-				let state = stmt.columnInt(0)
-				let exId = stmt.columnInt(1)
-				let ohId = stmt.columnInt(2)
-				let x = stmt.columnInt(3)
-				let y = stmt.columnInt(4)
+				let state = stmt.columnInt(position: 0)
+				let exId = stmt.columnInt(position: 1)
+				let ohId = stmt.columnInt(position: 2)
+				let x = stmt.columnInt(position: 3)
+				let y = stmt.columnInt(position: 4)
 				
 				ret.1 = PieceType(rawValue: state)!
-				ret.0 = ret.1 == .Ex ? exId : ohId
+				ret.0 = ret.1 == .ex ? exId : ohId
 				ret.2 = x
 				ret.3 = y
 			}
@@ -435,36 +436,36 @@ struct GameStateServer: GameState {
 	
 	// Returns tuple of player ID and piece type for next move
 	func endTurn(gameId: Int) -> (Int, PieceType) {
-		var ret = (invalidId, PieceType.None)
+		var ret = (invalidId, PieceType.none)
 		do {
 			let sqlite = self.db
 			defer {
 				sqlite.close()
 			}
-			try sqlite.execute("BEGIN")
-			self.endTurn(sqlite, gameId: gameId)
-			try sqlite.execute("COMMIT")
+			try sqlite.execute(statement: "BEGIN")
+			let _ = self.endTurn(sqlite: sqlite, gameId: gameId)
+			try sqlite.execute(statement: "COMMIT")
 		} catch { }
 		return ret
 	}
 	
 	// Returns tuple of player ID and piece type for next move
 	private func endTurn(sqlite: SQLite, gameId: Int) -> (Int, PieceType) {
-		var ret = (invalidId, PieceType.None)
+		var ret = (invalidId, PieceType.none)
 		do {
-			try sqlite.forEachRow("SELECT state, player_ex, player_oh FROM games WHERE id = \(gameId)") {
+			try sqlite.forEachRow(statement: "SELECT state, player_ex, player_oh FROM games WHERE id = \(gameId)") {
 				(stmt:SQLiteStmt, i:Int) -> () in
 				
-				let state = stmt.columnInt(0)
-				let exId = stmt.columnInt(1)
-				let ohId = stmt.columnInt(2)
+				let state = stmt.columnInt(position: 0)
+				let exId = stmt.columnInt(position: 1)
+				let ohId = stmt.columnInt(position: 2)
 				
 				let oldPiece = PieceType(rawValue: state)!
 				
-				ret.1 = oldPiece == .Ex ? .Oh : .Ex
-				ret.0 = ret.1 == .Ex ? exId : ohId
+				ret.1 = oldPiece == .ex ? .oh : .ex
+				ret.0 = ret.1 == .ex ? exId : ohId
 			}
-			try sqlite.execute("UPDATE games SET state = \(ret.1.rawValue) WHERE id = \(gameId)")
+			try sqlite.execute(statement: "UPDATE games SET state = \(ret.1.rawValue) WHERE id = \(gameId)")
 		} catch { }
 		return ret
 	}
@@ -474,7 +475,7 @@ struct GameStateServer: GameState {
 		defer {
 			sqlite.close()
 		}
-		self.setActiveBoard(sqlite, gameId: gameId, index: index)
+		self.setActiveBoard(sqlite: sqlite, gameId: gameId, index: index)
 	}
 	
 	func endGame(gameId: Int, winner: PieceType) {
@@ -483,8 +484,8 @@ struct GameStateServer: GameState {
 			defer {
 				sqlite.close()
 			}
-			let winnerValue = winner == .Ex ? PieceType.ExWin : PieceType.OhWin
-			try sqlite.execute("UPDATE games SET state = \(winnerValue.rawValue) WHERE id = \(gameId)")
+			let winnerValue = winner == .ex ? PieceType.exWin : PieceType.ohWin
+			try sqlite.execute(statement: "UPDATE games SET state = \(winnerValue.rawValue) WHERE id = \(gameId)")
 		} catch { }
 	}
 	
@@ -494,55 +495,55 @@ struct GameStateServer: GameState {
 		defer {
 			sqlite.close()
 		}
-		return self.getBoardOwner(sqlite, boardId: boardId)
+		return self.getBoardOwner(sqlite: sqlite, boardId: boardId)
 	}
 	
 	// Returns the winner of the indicated board.
 	private func getBoardOwner(sqlite: SQLite, boardId: Int) -> PieceType {
-		var ret = PieceType.None
+		var ret = PieceType.none
 		do {
 			// see if it has an outright winner
-			try sqlite.forEachRow("SELECT owner FROM boards WHERE id = \(boardId) AND owner != 0") {
+			try sqlite.forEachRow(statement: "SELECT owner FROM boards WHERE id = \(boardId) AND owner != 0") {
 				(stmt:SQLiteStmt, i:Int) -> () in
 				
-				let owner = stmt.columnInt(0)
+				let owner = stmt.columnInt(position: 0)
 				ret = PieceType(rawValue: owner)!
 			}
-			if ret == .None {
+			if ret == .none {
 				// no outright winner
 				// scan to see if someone has won
 				
 				// ex
-				if self.scanAllSlots(sqlite, boardId: boardId, type: .Ex) {
-					self.setBoardOwner(sqlite, boardId: boardId, type: .Ex)
-					ret = .Ex
+				if self.scanAllSlots(sqlite: sqlite, boardId: boardId, type: .ex) {
+					self.setBoardOwner(sqlite: sqlite, boardId: boardId, type: .ex)
+					ret = .ex
 				}// oh
-				else if self.scanAllSlots(sqlite, boardId: boardId, type: .Oh) {
-					self.setBoardOwner(sqlite, boardId: boardId, type: .Oh)
-					ret = .Oh
+				else if self.scanAllSlots(sqlite: sqlite, boardId: boardId, type: .oh) {
+					self.setBoardOwner(sqlite: sqlite, boardId: boardId, type: .oh)
+					ret = .oh
 				}
 				
 				// check for draw
 				// if there are non unowned slots then it's a draw
 				var slotCount = 0
 				
-				try sqlite.forEachRow("SELECT COUNT(*) FROM slots WHERE id_board = \(boardId)") {
+				try sqlite.forEachRow(statement: "SELECT COUNT(*) FROM slots WHERE id_board = \(boardId)") {
 					(stmt:SQLiteStmt, Int) -> () in
 					
-					slotCount = stmt.columnInt(0)
+					slotCount = stmt.columnInt(position: 0)
 				}
 				var count = 0
 				if slotCount == ultimateSlotCount * ultimateSlotCount {
-					try sqlite.forEachRow("SELECT COUNT(*) FROM slots WHERE id_board = \(boardId) AND owner = 0") {
+					try sqlite.forEachRow(statement: "SELECT COUNT(*) FROM slots WHERE id_board = \(boardId) AND owner = 0") {
 						(stmt:SQLiteStmt, Int) -> () in
-						count = stmt.columnInt(0)
+						count = stmt.columnInt(position: 0)
 					}
 				} else {
 					count = ultimateSlotCount * ultimateSlotCount
 				}
 				if count == 0 {
-					self.setBoardOwner(sqlite, boardId: boardId, type: .Draw)
-					ret = .Draw
+					self.setBoardOwner(sqlite: sqlite, boardId: boardId, type: .draw)
+					ret = .draw
 				}
 			}
 		} catch { }
@@ -555,16 +556,16 @@ struct GameStateServer: GameState {
 		defer {
 			sqlite.close()
 		}
-		return self.getSlotOwner(sqlite, boardId: boardId, index: index)
+		return self.getSlotOwner(sqlite: sqlite, boardId: boardId, index: index)
 	}
 	
 	// Returns the owner of the indicated slot.
 	private func getSlotOwner(sqlite: SQLite, boardId: Int, index: GridIndex) -> PieceType {
-		var ret = PieceType.None
+		var ret = PieceType.none
 		do {
-			try sqlite.forEachRow("SELECT owner FROM slots WHERE id_board = \(boardId) AND x = \(index.x) AND y = \(index.y)") {
+			try sqlite.forEachRow(statement: "SELECT owner FROM slots WHERE id_board = \(boardId) AND x = \(index.x) AND y = \(index.y)") {
 				(stmt:SQLiteStmt, i:Int) -> () in
-				let owner = stmt.columnInt(0)
+				let owner = stmt.columnInt(position: 0)
 				ret = PieceType(rawValue: owner)!
 			}
 		} catch { }
@@ -577,16 +578,16 @@ struct GameStateServer: GameState {
 		defer {
 			sqlite.close()
 		}
-		return self.getSlotOwner(sqlite, slotId: slotId)
+        return self.getSlotOwner(sqlite: sqlite, slotId: slotId)
 	}
 	
 	// Returns the owner of the indicated slot.
 	private func getSlotOwner(sqlite: SQLite, slotId: Int) -> PieceType {
-		var ret = PieceType.None
+		var ret = PieceType.none
 		do {
-			try sqlite.forEachRow("SELECT owner FROM slots WHERE id = \(slotId)") {
+			try sqlite.forEachRow(statement: "SELECT owner FROM slots WHERE id = \(slotId)") {
 				(stmt:SQLiteStmt, i:Int) -> () in
-				let owner = stmt.columnInt(0)
+				let owner = stmt.columnInt(position: 0)
 				ret = PieceType(rawValue: owner)!
 			}
 		} catch { }
@@ -601,9 +602,9 @@ struct GameStateServer: GameState {
 			defer {
 				sqlite.close()
 			}
-			try sqlite.execute("BEGIN")
-			let result = self.setSlotOwner(sqlite, slotId: slotId, type: type)
-			try sqlite.execute("COMMIT")
+			try sqlite.execute(statement: "BEGIN")
+			let result = self.setSlotOwner(sqlite: sqlite, slotId: slotId, type: type)
+			try sqlite.execute(statement: "COMMIT")
 			return result
 		} catch { }
 		return false
@@ -613,38 +614,38 @@ struct GameStateServer: GameState {
 	// Updates the next active board.
 	func setSlotOwner(sqlite: SQLite, slotId: Int, type: PieceType) -> Bool {
 		do {
-			guard self.getSlotOwner(sqlite, slotId: slotId) == .None else {
+            guard self.getSlotOwner(sqlite: sqlite, slotId: slotId) == .none else {
 				return false
 			}
-			try sqlite.execute("UPDATE slots SET owner = \(type.rawValue) WHERE id = \(slotId)")
+			try sqlite.execute(statement: "UPDATE slots SET owner = \(type.rawValue) WHERE id = \(slotId)")
 			return true
 		} catch { }
 		return false
 	}
 	
 	private func scanAllSlots(sqlite: SQLite, boardId: Int, type: PieceType) -> Bool {
-		if scanSlotsCrossTop(sqlite, boardId: boardId, type: type) {
+		if scanSlotsCrossTop(sqlite: sqlite, boardId: boardId, type: type) {
 			return true
 		}
-		if scanSlotsCrossMid(sqlite, boardId: boardId, type: type) {
+		if scanSlotsCrossMid(sqlite: sqlite, boardId: boardId, type: type) {
 			return true
 		}
-		if scanSlotsCrossBottom(sqlite, boardId: boardId, type: type) {
+		if scanSlotsCrossBottom(sqlite: sqlite, boardId: boardId, type: type) {
 			return true
 		}
-		if scanSlotsDownLeft(sqlite, boardId: boardId, type: type) {
+		if scanSlotsDownLeft(sqlite: sqlite, boardId: boardId, type: type) {
 			return true
 		}
-		if scanSlotsDownMid(sqlite, boardId: boardId, type: type) {
+		if scanSlotsDownMid(sqlite: sqlite, boardId: boardId, type: type) {
 			return true
 		}
-		if scanSlotsDownRight(sqlite, boardId: boardId, type: type) {
+		if scanSlotsDownRight(sqlite: sqlite, boardId: boardId, type: type) {
 			return true
 		}
-		if scanSlotsDiagLeft(sqlite, boardId: boardId, type: type) {
+		if scanSlotsDiagLeft(sqlite: sqlite, boardId: boardId, type: type) {
 			return true
 		}
-		if scanSlotsDiagRight(sqlite, boardId: boardId, type: type) {
+		if scanSlotsDiagRight(sqlite: sqlite, boardId: boardId, type: type) {
 			return true
 		}
 		return false
@@ -657,9 +658,9 @@ struct GameStateServer: GameState {
 			"OR (x = 1 AND y = 0)" +
 		"OR (x = 2 AND y = 0))"
 		var yes = false
-		try! sqlite.forEachRow(stat) {
+		try! sqlite.forEachRow(statement: stat) {
 			(stmt:SQLiteStmt, _:Int) -> () in
-			yes = 3 == stmt.columnInt(0)
+			yes = 3 == stmt.columnInt(position: 0)
 		}
 		return yes
 	}
@@ -671,9 +672,9 @@ struct GameStateServer: GameState {
 			"OR (x = 1 AND y = 1)" +
 		"OR (x = 2 AND y = 1))"
 		var yes = false
-		try! sqlite.forEachRow(stat) {
+		try! sqlite.forEachRow(statement: stat) {
 			(stmt:SQLiteStmt, _:Int) -> () in
-			yes = 3 == stmt.columnInt(0)
+			yes = 3 == stmt.columnInt(position: 0)
 		}
 		return yes
 	}
@@ -685,9 +686,9 @@ struct GameStateServer: GameState {
 			"OR (x = 1 AND y = 2)" +
 		"OR (x = 2 AND y = 2))"
 		var yes = false
-		try! sqlite.forEachRow(stat) {
+		try! sqlite.forEachRow(statement: stat) {
 			(stmt:SQLiteStmt, _:Int) -> () in
-			yes = 3 == stmt.columnInt(0)
+			yes = 3 == stmt.columnInt(position: 0)
 		}
 		return yes
 	}
@@ -699,9 +700,9 @@ struct GameStateServer: GameState {
 			"OR (x = 0 AND y = 1)" +
 		"OR (x = 0 AND y = 2))"
 		var yes = false
-		try! sqlite.forEachRow(stat) {
+		try! sqlite.forEachRow(statement: stat) {
 			(stmt:SQLiteStmt, _:Int) -> () in
-			yes = 3 == stmt.columnInt(0)
+			yes = 3 == stmt.columnInt(position: 0)
 		}
 		return yes
 	}
@@ -713,9 +714,9 @@ struct GameStateServer: GameState {
 			"OR (x = 1 AND y = 1)" +
 		"OR (x = 1 AND y = 2))"
 		var yes = false
-		try! sqlite.forEachRow(stat) {
+		try! sqlite.forEachRow(statement: stat) {
 			(stmt:SQLiteStmt, _:Int) -> () in
-			yes = 3 == stmt.columnInt(0)
+			yes = 3 == stmt.columnInt(position: 0)
 		}
 		return yes
 	}
@@ -727,9 +728,9 @@ struct GameStateServer: GameState {
 			"OR (x = 2 AND y = 1)" +
 		"OR (x = 2 AND y = 2))"
 		var yes = false
-		try! sqlite.forEachRow(stat) {
+		try! sqlite.forEachRow(statement: stat) {
 			(stmt:SQLiteStmt, _:Int) -> () in
-			yes = 3 == stmt.columnInt(0)
+			yes = 3 == stmt.columnInt(position: 0)
 		}
 		return yes
 	}
@@ -741,9 +742,9 @@ struct GameStateServer: GameState {
 			"OR (x = 1 AND y = 1)" +
 		"OR (x = 2 AND y = 2))"
 		var yes = false
-		try! sqlite.forEachRow(stat) {
+		try! sqlite.forEachRow(statement: stat) {
 			(stmt:SQLiteStmt, _:Int) -> () in
-			yes = 3 == stmt.columnInt(0)
+			yes = 3 == stmt.columnInt(position: 0)
 		}
 		return yes
 	}
@@ -755,36 +756,36 @@ struct GameStateServer: GameState {
 			"OR (x = 1 AND y = 1)" +
 		"OR (x = 0 AND y = 2))"
 		var yes = false
-		try! sqlite.forEachRow(stat) {
+		try! sqlite.forEachRow(statement: stat) {
 			(stmt:SQLiteStmt, _:Int) -> () in
-			yes = 3 == stmt.columnInt(0)
+			yes = 3 == stmt.columnInt(position: 0)
 		}
 		return yes
 	}
 
 	private func scanAllBoards(sqlite: SQLite, fieldId: Int, type: PieceType) -> Bool {
-		if scanBoardsCrossTop(sqlite, fieldId: fieldId, type: type) {
+		if scanBoardsCrossTop(sqlite: sqlite, fieldId: fieldId, type: type) {
 			return true
 		}
-		if scanBoardsCrossMid(sqlite, fieldId: fieldId, type: type) {
+		if scanBoardsCrossMid(sqlite: sqlite, fieldId: fieldId, type: type) {
 			return true
 		}
-		if scanBoardsCrossBottom(sqlite, fieldId: fieldId, type: type) {
+		if scanBoardsCrossBottom(sqlite: sqlite, fieldId: fieldId, type: type) {
 			return true
 		}
-		if scanBoardsDownLeft(sqlite, fieldId: fieldId, type: type) {
+		if scanBoardsDownLeft(sqlite: sqlite, fieldId: fieldId, type: type) {
 			return true
 		}
-		if scanBoardsDownMid(sqlite, fieldId: fieldId, type: type) {
+		if scanBoardsDownMid(sqlite: sqlite, fieldId: fieldId, type: type) {
 			return true
 		}
-		if scanBoardsDownRight(sqlite, fieldId: fieldId, type: type) {
+		if scanBoardsDownRight(sqlite: sqlite, fieldId: fieldId, type: type) {
 			return true
 		}
-		if scanBoardsDiagLeft(sqlite, fieldId: fieldId, type: type) {
+		if scanBoardsDiagLeft(sqlite: sqlite, fieldId: fieldId, type: type) {
 			return true
 		}
-		if scanBoardsDiagRight(sqlite, fieldId: fieldId, type: type) {
+		if scanBoardsDiagRight(sqlite: sqlite, fieldId: fieldId, type: type) {
 			return true
 		}
 		return false
@@ -797,9 +798,9 @@ struct GameStateServer: GameState {
 			"OR (x = 1 AND y = 0)" +
 		"OR (x = 2 AND y = 0))"
 		var yes = false
-		try! sqlite.forEachRow(stat) {
+		try! sqlite.forEachRow(statement: stat) {
 			(stmt:SQLiteStmt, _:Int) -> () in
-			yes = 3 == stmt.columnInt(0)
+			yes = 3 == stmt.columnInt(position: 0)
 		}
 		return yes
 	}
@@ -811,9 +812,9 @@ struct GameStateServer: GameState {
 			"OR (x = 1 AND y = 1)" +
 		"OR (x = 2 AND y = 1))"
 		var yes = false
-		try! sqlite.forEachRow(stat) {
+		try! sqlite.forEachRow(statement: stat) {
 			(stmt:SQLiteStmt, _:Int) -> () in
-			yes = 3 == stmt.columnInt(0)
+			yes = 3 == stmt.columnInt(position: 0)
 		}
 		return yes
 	}
@@ -825,9 +826,9 @@ struct GameStateServer: GameState {
 			"OR (x = 1 AND y = 2)" +
 		"OR (x = 2 AND y = 2))"
 		var yes = false
-		try! sqlite.forEachRow(stat) {
+		try! sqlite.forEachRow(statement: stat) {
 			(stmt:SQLiteStmt, _:Int) -> () in
-			yes = 3 == stmt.columnInt(0)
+			yes = 3 == stmt.columnInt(position: 0)
 		}
 		return yes
 	}
@@ -839,9 +840,9 @@ struct GameStateServer: GameState {
 			"OR (x = 0 AND y = 1)" +
 		"OR (x = 0 AND y = 2))"
 		var yes = false
-		try! sqlite.forEachRow(stat) {
+		try! sqlite.forEachRow(statement: stat) {
 			(stmt:SQLiteStmt, _:Int) -> () in
-			yes = 3 == stmt.columnInt(0)
+			yes = 3 == stmt.columnInt(position: 0)
 		}
 		return yes
 	}
@@ -853,9 +854,9 @@ struct GameStateServer: GameState {
 			"OR (x = 1 AND y = 1)" +
 		"OR (x = 1 AND y = 2))"
 		var yes = false
-		try! sqlite.forEachRow(stat) {
+		try! sqlite.forEachRow(statement: stat) {
 			(stmt:SQLiteStmt, _:Int) -> () in
-			yes = 3 == stmt.columnInt(0)
+			yes = 3 == stmt.columnInt(position: 0)
 		}
 		return yes
 	}
@@ -867,9 +868,9 @@ struct GameStateServer: GameState {
 			"OR (x = 2 AND y = 1)" +
 		"OR (x = 2 AND y = 2))"
 		var yes = false
-		try! sqlite.forEachRow(stat) {
+		try! sqlite.forEachRow(statement: stat) {
 			(stmt:SQLiteStmt, _:Int) -> () in
-			yes = 3 == stmt.columnInt(0)
+			yes = 3 == stmt.columnInt(position: 0)
 		}
 		return yes
 	}
@@ -881,9 +882,9 @@ struct GameStateServer: GameState {
 			"OR (x = 1 AND y = 1)" +
 		"OR (x = 2 AND y = 2))"
 		var yes = false
-		try! sqlite.forEachRow(stat) {
+		try! sqlite.forEachRow(statement: stat) {
 			(stmt:SQLiteStmt, _:Int) -> () in
-			yes = 3 == stmt.columnInt(0)
+			yes = 3 == stmt.columnInt(position: 0)
 		}
 		return yes
 	}
@@ -895,51 +896,51 @@ struct GameStateServer: GameState {
 			"OR (x = 1 AND y = 1)" +
 		"OR (x = 0 AND y = 2))"
 		var yes = false
-		try! sqlite.forEachRow(stat) {
+		try! sqlite.forEachRow(statement: stat) {
 			(stmt:SQLiteStmt, _:Int) -> () in
-			yes = 3 == stmt.columnInt(0)
+			yes = 3 == stmt.columnInt(position: 0)
 		}
 		return yes
 	}
 	
 	private func setBoardOwner(sqlite: SQLite, boardId: Int, type: PieceType) {
-		try! sqlite.execute("UPDATE boards SET owner = \(type.rawValue) WHERE id = \(boardId)")
+		try! sqlite.execute(statement: "UPDATE boards SET owner = \(type.rawValue) WHERE id = \(boardId)")
 	}
 	
 	private func getCurrentState(sqlite: SQLite, gameId: Int) -> UltimateState {
 		// games (id INTEGER PRIMARY KEY, state INTEGER, player_ex INTEGER, player_oh INTEGER, x INTEGER, y INTEGER)
-		var currentPiece = PieceType.None
+		var currentPiece = PieceType.none
 		var x = 0, y = 0
 		do {
-			try sqlite.forEachRow("SELECT state, x, y FROM games WHERE id = \(gameId)") {
+			try sqlite.forEachRow(statement: "SELECT state, x, y FROM games WHERE id = \(gameId)") {
 				(stmt:SQLiteStmt, Int) -> () in
 				
-				currentPiece = PieceType(rawValue: stmt.columnInt(0))!
-				x = stmt.columnInt(1)
-				y = stmt.columnInt(2)
+				currentPiece = PieceType(rawValue: stmt.columnInt(position: 0))!
+				x = stmt.columnInt(position: 1)
+				y = stmt.columnInt(position: 2)
 			}
 		} catch {}
 		
-		if let field = self.getField(sqlite, gameId: gameId) {
+		if let field = self.getField(sqlite: sqlite, gameId: gameId) {
 			if currentPiece.isWinner {
-				return UltimateState.GameOver(currentPiece, field)
+				return UltimateState.gameOver(currentPiece, field)
 			} else {
-				return UltimateState.InPlay(currentPiece, (x, y), field)
+				return UltimateState.inPlay(currentPiece, (x, y), field)
 			}
 		}
-		return UltimateState.None
+		return UltimateState.none
 	}
 	
 	func createPlayer(nick: String, response: (AsyncResponse) -> ()) {
-		let id = self.createPlayer(nick)
-		response(.SuccessInt(id))
+		let id = self.createPlayer(nick: nick)
+		response(.successInt(id))
 	}
 	
 	func getPlayerNick(playerId: Int, response: (AsyncResponse) -> ()) {
-		if let nick = self.getPlayerNick(playerId) {
-			response(.SuccessString(nick))
+		if let nick = self.getPlayerNick(playerId: playerId) {
+			response(.successString(nick))
 		} else {
-			response(.Error(404, "Nick not found"))
+			response(.error(404, "Nick not found"))
 		}
 	}
 
@@ -949,84 +950,84 @@ struct GameStateServer: GameState {
 			sqlite.close()
 		}
 		do {
-			try sqlite.execute("BEGIN")
-			let (gameId, _) = self.getActiveGameForPlayer(sqlite, playerId: playerId)
+			try sqlite.execute(statement: "BEGIN")
+			let (gameId, _) = self.getActiveGameForPlayer(sqlite: sqlite, playerId: playerId)
 			if gameId != invalidId {
-				let state = self.getCurrentState(sqlite, gameId: gameId)
-				try sqlite.execute("COMMIT")
-				return response(.SuccessState(state))
+                let state = self.getCurrentState(sqlite: sqlite, gameId: gameId)
+				try sqlite.execute(statement: "COMMIT")
+				return response(.successState(state))
 			}
 		} catch {}
-		response(.SuccessState(UltimateState.None))
+		response(.successState(UltimateState.none))
 	}
 	
 	func playPieceOnBoard(playerId: Int, board: GridIndex, slotIndex: GridIndex, response: (AsyncResponse) -> ()) {
 		let sqlite = self.db
 		
 		do {
-			try sqlite.execute("BEGIN")
+			try sqlite.execute(statement: "BEGIN")
 			
-			let (gameId, currentPiece) = self.getActiveGameForPlayer(sqlite, playerId: playerId)
-			let (turnPlayer, turnPiece, turnBoardX, turnBoardY) = self.getCurrentPlayer(sqlite, gameId: gameId)
-			let fieldId = self.getFieldId(sqlite, gameId: gameId)
-			let boardId = self.getBoardId(sqlite, fieldId: fieldId, index: board, orInsert: true)
-			let boardOwner = self.getBoardOwner(sqlite, boardId: boardId)
-			let slotId = self.getSlotId(sqlite, boardId: boardId, index: slotIndex)
-			let slotOwner = self.getSlotOwner(sqlite, slotId: slotId)
+			let (gameId, currentPiece) = self.getActiveGameForPlayer(sqlite: sqlite, playerId: playerId)
+			let (turnPlayer, turnPiece, turnBoardX, turnBoardY) = self.getCurrentPlayer(sqlite: sqlite, gameId: gameId)
+			let fieldId = self.getFieldId(sqlite: sqlite, gameId: gameId)
+			let boardId = self.getBoardId(sqlite: sqlite, fieldId: fieldId, index: board, orInsert: true)
+			let boardOwner = self.getBoardOwner(sqlite: sqlite, boardId: boardId)
+			let slotId = self.getSlotId(sqlite: sqlite, boardId: boardId, index: slotIndex)
+			let slotOwner = self.getSlotOwner(sqlite: sqlite, slotId: slotId)
 			
 			// check the following:
 			// the indicated board is the one that must be played on
 			guard turnBoardX == invalidId || (turnBoardX == board.x && turnBoardY == board.y) else {
-				return response(.SuccessState(UltimateState.InvalidMove))
+				return response(.successState(UltimateState.invalidMove))
 			}
 			// it is the current player's turn
 			guard turnPlayer == playerId && currentPiece == turnPiece else {
-				return response(.SuccessState(UltimateState.InvalidMove))
+				return response(.successState(UltimateState.invalidMove))
 			}
 			// the indicated board is unowned
-			guard boardOwner == .None else {
-				return response(.SuccessState(UltimateState.InvalidMove))
+			guard boardOwner == .none else {
+				return response(.successState(UltimateState.invalidMove))
 			}
 			// the indicated slot is unowned
-			guard slotOwner == .None else {
-				return response(.SuccessState(UltimateState.InvalidMove))
+			guard slotOwner == .none else {
+				return response(.successState(UltimateState.invalidMove))
 			}
 			
-			self.setSlotOwner(sqlite, slotId: slotId, type: turnPiece)
-			let _ = self.getBoardOwner(sqlite, boardId: boardId)
-			self.endTurn(sqlite, gameId: gameId)
+			let _ = self.setSlotOwner(sqlite: sqlite, slotId: slotId, type: turnPiece)
+			let _ = self.getBoardOwner(sqlite: sqlite, boardId: boardId)
+			let _ = self.endTurn(sqlite: sqlite, gameId: gameId)
 			
-			let (nextTurnPlayer, nextTurnPiece, _, _) = self.getCurrentPlayer(sqlite, gameId: gameId)
+			let (nextTurnPlayer, nextTurnPiece, _, _) = self.getCurrentPlayer(sqlite: sqlite, gameId: gameId)
 			
-			var winner = self.getGameWinner(sqlite, gameId: gameId)
-			if winner == .None {
+			var winner = self.getGameWinner(sqlite: sqlite, gameId: gameId)
+			if winner == .none {
 				
-				let boardId = self.getBoardId(sqlite, fieldId: fieldId, index: slotIndex, orInsert: true)
-				let boardOwner = self.getBoardOwner(sqlite, boardId: boardId)
-				if boardOwner == .None {
-					self.setActiveBoard(sqlite, gameId: gameId, index: slotIndex)
+				let boardId = self.getBoardId(sqlite: sqlite, fieldId: fieldId, index: slotIndex, orInsert: true)
+				let boardOwner = self.getBoardOwner(sqlite: sqlite, boardId: boardId)
+				if boardOwner == .none {
+					self.setActiveBoard(sqlite: sqlite, gameId: gameId, index: slotIndex)
 				} else {
-					self.setActiveBoard(sqlite, gameId: gameId, index: (invalidId, invalidId))
+					self.setActiveBoard(sqlite: sqlite, gameId: gameId, index: (invalidId, invalidId))
 				}
 				
-				try sqlite.execute("COMMIT")
+				try sqlite.execute(statement: "COMMIT")
 				
 				if nextTurnPlayer == simpleBotId {
 					// have the bot make a move
 					let bot = RandomMoveBot(gameId: gameId, piece: nextTurnPiece)
-					bot.makeMove(self)
-					winner = self.getGameWinner(gameId)
+					bot.makeMove(gameState: self)
+					winner = self.getGameWinner(gameId: gameId)
 				}
 			} else {
-				try sqlite.execute("COMMIT")
+				try sqlite.execute(statement: "COMMIT")
 			}
 			
-			let state = self.getCurrentState(sqlite, gameId: gameId)
+			let state = self.getCurrentState(sqlite: sqlite, gameId: gameId)
 			sqlite.close()
 			
 			print("\(state)")
 			
-			response(.SuccessState(state))
+			response(.successState(state))
 			
 		} catch {
 			print("\(error)")
@@ -1035,12 +1036,12 @@ struct GameStateServer: GameState {
 	}
 	
 	func createGame(playerId: Int, gameType: PlayerType, response: (AsyncResponse) -> ()) {
-		response(AsyncResponse.Error(-1, "Should not be called directly"))
+		response(AsyncResponse.error(-1, "Should not be called directly"))
 	}
 	
 	func getActiveGame(playerId: Int, response: (AsyncResponse) -> ()) {
-		let activeInfo = self.getActiveGameForPlayer(playerId)
-		response(AsyncResponse.SuccessString("\(activeInfo.0) \(activeInfo.1.serialize())"))
+		let activeInfo = self.getActiveGameForPlayer(playerId: playerId)
+		response(AsyncResponse.successString("\(activeInfo.0) \(activeInfo.1.serialize())"))
 	}
 }
 

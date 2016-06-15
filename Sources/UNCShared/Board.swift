@@ -6,30 +6,30 @@
 //  Copyright © 2016 PerfectlySoft. All rights reserved.
 //
 
-struct Board: SquareGrid, Equatable, CustomStringConvertible {
+public struct Board: SquareGrid, Equatable, CustomStringConvertible {
 	
-	typealias Element = PieceType
+	public typealias Element = PieceType
 	
-	var slots: [[PieceType]]
+	public var slots: [[PieceType]]
 	let owner: PieceType
 	
-	init(slots: [[PieceType]], owner: PieceType) {
+	public init(slots: [[PieceType]], owner: PieceType) {
 		self.slots = slots
 		self.owner = owner
 	}
 	
-	subscript(index: GridIndex) -> Element {
+	public subscript(index: GridIndex) -> Element {
 		get {
 			return self.slots[index.y][index.x]
 		}
 	}
 	
-	var description: String {
-		return self.slots.map { $0.map { $0.description }.joinWithSeparator("") }.joinWithSeparator("\n")
+	public var description: String {
+		return self.slots.map { $0.map { $0.description }.joined(separator: "") }.joined(separator: "\n")
 	}
 	
 	func serialize() -> String {
-		return self.slots.flatMap { $0 }.map { $0.serialize() }.joinWithSeparator("")
+		return self.slots.flatMap { $0 }.map { $0.serialize() }.joined(separator: "")
 	}
 	
 	static func deserialize(source: String) -> Board? {
@@ -41,51 +41,48 @@ struct Board: SquareGrid, Equatable, CustomStringConvertible {
 		
 		var slots = [[PieceType]]()
 		for segment in 0..<ultimateSlotCount {
-			
-			let startIndex = source.startIndex.advancedBy(segment * ultimateSlotCount)
-			let endIndex = source.startIndex.advancedBy((segment+1) * ultimateSlotCount)
-			
+			let startIndex = source.index(source.startIndex, offsetBy: segment * ultimateSlotCount)
+			let endIndex = source.index(source.startIndex, offsetBy: (segment+1) * ultimateSlotCount)
 			let segment = source[startIndex..<endIndex]
-			
-			let subSlots = segment.characters.map { PieceType(rawValue: Int(String($0))!) ?? PieceType.None }
+			let subSlots = segment.characters.map { PieceType(rawValue: Int(String($0))!) ?? PieceType.none }
 			slots.append(subSlots)
 		}
-		return Board(slots: slots, owner: sussOwner(slots))
+		return Board(slots: slots, owner: sussOwner(slots: slots))
 	}
 	
 	private static func sussOwner(slots: [[PieceType]]) -> PieceType {
 		// across
 		for y in 0..<ultimateSlotCount {
-			if let across = sameOwner(slots[y][0], two: slots[y][1], three: slots[y][2]) {
+			if let across = sameOwner(one: slots[y][0], two: slots[y][1], three: slots[y][2]) {
 				return across
 			}
 		}
 		// down
 		for x in 0..<ultimateSlotCount {
-			if let down = sameOwner(slots[0][x], two: slots[1][x], three: slots[2][x]) {
+			if let down = sameOwner(one: slots[0][x], two: slots[1][x], three: slots[2][x]) {
 				return down
 			}
 		}
 		// diag to right
-		if let diagRight = sameOwner(slots[0][0], two: slots[1][1], three: slots[2][2]) {
+		if let diagRight = sameOwner(one: slots[0][0], two: slots[1][1], three: slots[2][2]) {
 			return diagRight
 		}
 		// diag to left
-		if let diagLeft = sameOwner(slots[0][2], two: slots[1][1], three: slots[2][0]) {
+		if let diagLeft = sameOwner(one: slots[0][2], two: slots[1][1], three: slots[2][0]) {
 			return diagLeft
 		}
-		return PieceType.None
+		return PieceType.none
 	}
 	
 	private static func sameOwner(one: PieceType, two: PieceType, three: PieceType) -> PieceType? {
-		if one != PieceType.None && one == two && one == three {
+		if one != PieceType.none && one == two && one == three {
 			return one
 		}
 		return nil
 	}
 }
 
-func ==(lhs: Board, rhs: Board) -> Bool {
+public func ==(lhs: Board, rhs: Board) -> Bool {
 	return lhs.owner == rhs.owner && lhs.slots.flatMap { $0 } == rhs.slots.flatMap { $0 }
 }
 

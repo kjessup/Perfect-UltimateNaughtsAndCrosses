@@ -6,24 +6,24 @@
 //  Copyright © 2016 PerfectlySoft. All rights reserved.
 //
 
-struct Field: SquareGrid, Equatable, CustomStringConvertible {
+public struct Field: SquareGrid, Equatable, CustomStringConvertible {
 	
-	typealias Element = Board
+	public typealias Element = Board
 	
-	var slots: [[Board]]
+	public var slots: [[Board]]
 	
-	init(slots: [[Board]]) {
+	public init(slots: [[Board]]) {
 		self.slots = slots
 	}
 	
-	subscript(index: GridIndex) -> Element {
+	public subscript(index: GridIndex) -> Element {
 		get {
 			return self.slots[index.y][index.x]
 		}
 	}
 	
 	func serialize() -> String {
-		return self.slots.flatMap { $0 }.map { $0.serialize() }.joinWithSeparator("")
+		return self.slots.flatMap { $0 }.map { $0.serialize() }.joined(separator: "")
 	}
 	
 	static func deserialize(source: String) -> Field? {
@@ -36,11 +36,11 @@ struct Field: SquareGrid, Equatable, CustomStringConvertible {
 		var subSlots = [Board]()
 		for segment in 0..<(ultimateSlotCount * ultimateSlotCount) {
 			
-			let startIndex = source.startIndex.advancedBy(segment * ultimateSlotCount * ultimateSlotCount)
-			let endIndex = source.startIndex.advancedBy((segment+1) * ultimateSlotCount * ultimateSlotCount)
+			let startIndex = source.index(source.startIndex, offsetBy: segment * ultimateSlotCount * ultimateSlotCount)
+			let endIndex = source.index(source.startIndex, offsetBy: (segment+1) * ultimateSlotCount * ultimateSlotCount)
 			
 			let segment = source[startIndex..<endIndex]
-			guard let board = Board.deserialize(segment) else {
+			guard let board = Board.deserialize(source: segment) else {
 				return nil
 			}
 			subSlots.append(board)
@@ -52,41 +52,41 @@ struct Field: SquareGrid, Equatable, CustomStringConvertible {
 		return Field(slots: slots)
 	}
 	
-	var description: String {
+	public var description: String {
 		var s = ""
 		
 		for _ in 0..<(ultimateSlotCount * ultimateSlotCount + 10) {
-			s.appendContentsOf("_")
+			s.append("_")
 		}
-		s.appendContentsOf("\n")
+		s.append("\n")
 		
 		for y in 0..<ultimateSlotCount {
 			
 			let boards = [self[(0, y)], self[(1, y)], self[(2, y)]]
 			
 			for rowY in 0..<ultimateSlotCount { // each row
-				s.appendContentsOf("| ")
+				s.append("| ")
 				for boardY in 0..<ultimateSlotCount { // each board
 					if boardY != 0 {
-						s.appendContentsOf(" | ")
+						s.append(" | ")
 					}
 					for boardX in 0..<ultimateSlotCount { // each x in each board
-						s.appendContentsOf("\(boards[boardY][(boardX, rowY)])")
+						s.append("\(boards[boardY][(boardX, rowY)])")
 					}
 				}
-				s.appendContentsOf(" |\n")
+				s.append(" |\n")
 			}
 			
 			for _ in 0..<(ultimateSlotCount * ultimateSlotCount + 10) {
-				s.appendContentsOf("_")
+				s.append("_")
 			}
-			s.appendContentsOf("\n")
+			s.append("\n")
 		}
 		return s
 	}
 }
 
-func ==(lhs: Field, rhs: Field) -> Bool {
+public func ==(lhs: Field, rhs: Field) -> Bool {
 	return lhs.slots.flatMap { $0 } == rhs.slots.flatMap { $0 }
 }
 

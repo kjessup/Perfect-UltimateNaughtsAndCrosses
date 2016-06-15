@@ -6,32 +6,32 @@
 //  Copyright © 2016 PerfectlySoft. All rights reserved.
 //
 
-enum PieceType: Int, CustomStringConvertible {
-	case None, Ex, Oh, ExWin, OhWin, Draw
+public enum PieceType: Int, CustomStringConvertible {
+	case none, ex, oh, exWin, ohWin, draw
 	
-	var description: String {
+	public var description: String {
 		switch self {
-		case .None:
+		case .none:
 			return "_"
-		case .Ex, ExWin:
+		case .ex, exWin:
 			return "X"
-		case .Oh, OhWin:
+		case .oh, ohWin:
 			return "O"
-		case .Draw:
+		case .draw:
 			return "-"
 		}
 	}
 	
-	var isWinner: Bool {
+	public var isWinner: Bool {
 		switch self {
-		case .ExWin, .OhWin, .Draw:
+		case .exWin, .ohWin, .draw:
 			return true
 		default:
 			return false
 		}
 	}
 	
-	func serialize() -> String {
+	public func serialize() -> String {
 		return "\(self.rawValue)"
 	}
 	

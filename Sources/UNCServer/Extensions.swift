@@ -7,11 +7,12 @@
 //
 
 import PerfectLib
+import UNCShared
 
 extension WebResponse {
 	func badRequest(msg: String) {
-		self.setStatus(400, message: "Bad Request")
-		self.appendBodyString(msg)
+		self.setStatus(code: 400, message: "Bad Request")
+        self.appendBody(string: msg)
 	}
 	
 	var playerId: Int? {

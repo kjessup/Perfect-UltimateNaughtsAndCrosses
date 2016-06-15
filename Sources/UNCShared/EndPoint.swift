@@ -6,9 +6,9 @@
 //  Copyright © 2016 PerfectlySoft. All rights reserved.
 //
 
-let playerIdCookieName = "unc-player"
+public let playerIdCookieName = "unc-player"
 
-enum EndPoint: String {
+public enum EndPoint: String {
 	
 	// register a nick, get back a player id
 	case RegisterNick = "unc/register/{nick}" // -> id

@@ -6,7 +6,9 @@
 //
 //
 
+import PerfectThread
 import PerfectLib
+import UNCShared
 
 var waitingPlayerId = invalidId
 let waitingPlayerLock = Threading.Lock()
@@ -43,64 +45,64 @@ func registerNickHandler(request: WebRequest, _ response: WebResponse) {
 	
 	print("registerNickHandler")
 	
-	response.replaceHeader("Content-Type", value: "text/plain")
+	response.replaceHeader(name: "Content-Type", value: "text/plain")
 	
 	defer {
 		response.requestCompleted()
 	}
 	
 	guard let nick = request.urlVariables["nick"] else {
-		return response.badRequest("Player nick not provided")
+		return response.badRequest(msg: "Player nick not provided")
 	}
 	
 	let gameState = GameStateServer()
-	let playerId = gameState.createPlayer(nick)
+	let playerId = gameState.createPlayer(nick: nick)
 	
 	guard playerId != invalidId else {
-		return response.badRequest("Nick could not be registered")
+		return response.badRequest(msg: "Nick could not be registered")
 	}
 	
-	response.appendBodyString("\(playerId)")
+    response.appendBody(string: "\(playerId)")
 }
 
 func getActiveGameHandler(request: WebRequest, _ response: WebResponse) {
 	
 	print("getActiveGameHandler")
 	
-	response.replaceHeader("Content-Type", value: "text/plain")
+	response.replaceHeader(name: "Content-Type", value: "text/plain")
 	
 	defer {
 		response.requestCompleted()
 	}
 	
 	guard let playerId = request.playerId else {
-		return response.badRequest("Could not get active player id")
+		return response.badRequest(msg: "Could not get active player id")
 	}
 	
 	let gameState = GameStateServer()
-	let (gameId, piece) = gameState.getActiveGameForPlayer(playerId)
+	let (gameId, piece) = gameState.getActiveGameForPlayer(playerId: playerId)
 	
-	response.appendBodyString("\(gameId) \(piece.rawValue)")
+    response.appendBody(string: "\(gameId) \(piece.rawValue)")
 }
 
 func startGameHandler(request: WebRequest, _ response: WebResponse) {
 	
 	print("startGameHandler")
 	
-	response.replaceHeader("Content-Type", value: "text/plain")
+	response.replaceHeader(name: "Content-Type", value: "text/plain")
 	
 	defer {
 		response.requestCompleted()
 	}
 	
 	guard let playerId = request.playerId else {
-		return response.badRequest("Could not get active player id")
+		return response.badRequest(msg: "Could not get active player id")
 	}
 	
 	guard let rawType = request.urlVariables["playertype"],
 			rawInt = Int(rawType),
 			playerType = PlayerType(rawValue: rawInt) else {
-		return response.badRequest("Valid player type not provided")
+		return response.badRequest(msg: "Valid player type not provided")
 	}
 	let gameState = GameStateServer()
 	var gameId = invalidId
@@ -121,25 +123,25 @@ func startGameHandler(request: WebRequest, _ response: WebResponse) {
 			}
 		}
 	}
-	response.appendBodyString("\(gameId)")
+    response.appendBody(string: "\(gameId)")
 }
 
 func concedeGameHandler(request: WebRequest, _ response: WebResponse) {
 	
 	print("concedeGameHandler")
 	
-	response.replaceHeader("Content-Type", value: "text/plain")
+	response.replaceHeader(name: "Content-Type", value: "text/plain")
 	
 	defer {
 		response.requestCompleted()
 	}
 	
 	guard let playerId = request.playerId else {
-		return response.badRequest("Could not get active player id")
+		return response.badRequest(msg: "Could not get active player id")
 	}
 	
 	let gameState = GameStateServer()
-	let (gameId, pieceType) = gameState.getActiveGameForPlayer(playerId)
+	let (gameId, pieceType) = gameState.getActiveGameForPlayer(playerId: playerId)
 	
 	if gameId == invalidId {
 		waitingPlayerLock.doWithLock {
@@ -147,18 +149,18 @@ func concedeGameHandler(request: WebRequest, _ response: WebResponse) {
 				waitingPlayerId = invalidId
 			}
 		}
-		let ultimateState = UltimateState.None
-		response.appendBodyString(ultimateState.serialize())
+		let ultimateState = UltimateState.none
+		response.appendBody(string: ultimateState.serialize())
 	} else {
-		let proposedWinner = pieceType.rawValue == PieceType.Ex.rawValue ? PieceType.Oh : PieceType.Ex
-		let actualWinner = gameState.setGameWinner(gameId, to: proposedWinner)
+		let proposedWinner = pieceType.rawValue == PieceType.ex.rawValue ? PieceType.oh : PieceType.ex
+		let actualWinner = gameState.setGameWinner(gameId: gameId, to: proposedWinner)
 		
-		guard let field = gameState.getField(gameId) else {
-			return response.badRequest("Could not get game field")
+		guard let field = gameState.getField(gameId: gameId) else {
+			return response.badRequest(msg: "Could not get game field")
 		}
 		
-		let ultimateState = UltimateState.GameOver(actualWinner, field)
-		response.appendBodyString(ultimateState.serialize())
+		let ultimateState = UltimateState.gameOver(actualWinner, field)
+		response.appendBody(string: ultimateState.serialize())
 	}
 }
 
@@ -166,21 +168,21 @@ func getGameStatusHandler(request: WebRequest, _ response: WebResponse) {
 	
 	print("getGameStatusHandler")
 	
-	response.replaceHeader("Content-Type", value: "text/plain")
+	response.replaceHeader(name: "Content-Type", value: "text/plain")
 	
 	guard let playerId = request.playerId else {
-		response.badRequest("Could not get active player id")
+		response.badRequest(msg: "Could not get active player id")
 		return response.requestCompleted()
 	}
 	
 	let gameState = GameStateServer()
-	gameState.getCurrentState(playerId) {
+	gameState.getCurrentState(playerId: playerId) {
 		ultimateState in
 		
-		if case .SuccessState(let state) = ultimateState {
-			response.appendBodyString(state.serialize())
+		if case .successState(let state) = ultimateState {
+			response.appendBody(string: state.serialize())
 		} else {
-			response.badRequest("Could not get game state")
+			response.badRequest(msg: "Could not get game state")
 		}
 		response.requestCompleted()
 	}
@@ -190,10 +192,10 @@ func makeMoveHandler(request: WebRequest, _ response: WebResponse) {
 	
 	print("makeMoveHandler")
 	
-	response.replaceHeader("Content-Type", value: "text/plain")
+	response.replaceHeader(name: "Content-Type", value: "text/plain")
 	
 	guard let playerId = request.playerId else {
-		response.badRequest("Could not get active player id")
+		response.badRequest(msg: "Could not get active player id")
 		return response.requestCompleted()
 	}
 	
@@ -201,7 +203,7 @@ func makeMoveHandler(request: WebRequest, _ response: WebResponse) {
 			by = request.urlVariables["by"],
 			x = request.urlVariables["x"],
 			y = request.urlVariables["y"] else {
-		response.badRequest("Moves require board x, y and slot x, y")
+		response.badRequest(msg: "Moves require board x, y and slot x, y")
 		return response.requestCompleted()
 	}
 	
@@ -209,18 +211,18 @@ func makeMoveHandler(request: WebRequest, _ response: WebResponse) {
 			byInt = Int(by),
 			xInt = Int(x),
 			yInt = Int(y) else {
-		response.badRequest("Invalid value for board or slot")
+		response.badRequest(msg: "Invalid value for board or slot")
 		return response.requestCompleted()
 	}
 	
 	let gameState = GameStateServer()
-	gameState.playPieceOnBoard(playerId, board: (bxInt, byInt), slotIndex: (xInt, yInt)) {
+	gameState.playPieceOnBoard(playerId: playerId, board: (bxInt, byInt), slotIndex: (xInt, yInt)) {
 		ultimateState in
 		
-		if case .SuccessState(let state) = ultimateState {
-			response.appendBodyString(state.serialize())
+		if case .successState(let state) = ultimateState {
+			response.appendBody(string: state.serialize())
 		} else {
-			response.badRequest("Could not get game state")
+			response.badRequest(msg: "Could not get game state")
 		}
 		response.requestCompleted()
 	}
@@ -230,21 +232,21 @@ func getPlayerNickHandler(request: WebRequest, _ response: WebResponse) {
 	
 	print("getPlayerNickHandler")
 	
-	response.replaceHeader("Content-Type", value: "text/plain")
+	response.replaceHeader(name: "Content-Type", value: "text/plain")
 	
 	guard let playerId = request.urlVariables["playerid"], playerIdInt = Int(playerId) else {
-		response.badRequest("Player id not provided")
+		response.badRequest(msg: "Player id not provided")
 		return response.requestCompleted()
 	}
 	
 	let gameState = GameStateServer()
-	gameState.getPlayerNick(playerIdInt) {
+	gameState.getPlayerNick(playerId: playerIdInt) {
 		asyncResponse in
 		
-		if case .SuccessString(let nick) = asyncResponse {
-			response.appendBodyString(nick)
+		if case .successString(let nick) = asyncResponse {
+            response.appendBody(string: nick)
 		} else {
-			response.badRequest("Could not get player nick")
+			response.badRequest(msg: "Could not get player nick")
 		}
 		response.requestCompleted()
 	}

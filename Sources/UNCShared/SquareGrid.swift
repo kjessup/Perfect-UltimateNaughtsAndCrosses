@@ -16,9 +16,9 @@
 // | 0,2 | 1,2 | 2,2 |
 //  -----------------
 
-typealias GridIndex = (x: Int, y: Int)
+public typealias GridIndex = (x: Int, y: Int)
 
-protocol SquareGrid {
+public protocol SquareGrid {
 	associatedtype Element
 	
 	// slots are indexed as [y][x]

@@ -28,6 +28,7 @@ func randomInt(max: Int) -> Int {
 #else
 	
 import Darwin
+import UNCShared
 
 func randomInt(max: Int) -> Int {
 	return Int(arc4random_uniform(UInt32(max)))
@@ -52,19 +53,19 @@ struct RandomMoveBot {
 	}
 	
 	func makeMove(gameState: GameStateServer) {
-		let (_, _, x, y) = gameState.getCurrentPlayer(self.gameId)
+		let (_, _, x, y) = gameState.getCurrentPlayer(gameId: self.gameId)
 		if x != invalidId {
-			let boardId = gameState.getBoardId(gameId, index: (x, y))
-			return self.makeMoveOnBoard(gameState, boardId: boardId)
+			let boardId = gameState.getBoardId(gameId: gameId, index: (x, y))
+			return self.makeMoveOnBoard(gameState: gameState, boardId: boardId)
 		}
 		// we can move on any board
 		// pick an unowned board at random
 		var boards = [Int]()
 		for x in 0..<3 {
 			for y in 0..<3 {
-				let boardId = gameState.getBoardId(self.gameId, index: (x, y))
-				let boardOwner = gameState.getBoardOwner(boardId)
-				if boardOwner == .None {
+				let boardId = gameState.getBoardId(gameId: self.gameId, index: (x, y))
+				let boardOwner = gameState.getBoardOwner(boardId: boardId)
+				if boardOwner == .none {
 					boards.append(boardId)
 				}
 			}
@@ -72,9 +73,9 @@ struct RandomMoveBot {
 		guard boards.count > 0 else {
 			fatalError("It's my turn but there are no valid boards on which to play")
 		}
-		let rnd = randomInt(boards.count)
+		let rnd = randomInt(max: boards.count)
 		let boardId = boards[Int(rnd)]
-		self.makeMoveOnBoard(gameState, boardId: boardId)
+		self.makeMoveOnBoard(gameState: gameState, boardId: boardId)
 	}
 	
 	private func makeMoveOnBoard(gameState: GameStateServer, boardId: Int) {
@@ -82,9 +83,9 @@ struct RandomMoveBot {
 		var slots = [(Int, GridIndex)]()
 		for x in 0..<3 {
 			for y in 0..<3 {
-				let slotId = gameState.getSlotId(boardId, index: (x, y))
-				let slotOwner = gameState.getSlotOwner(slotId)
-				if slotOwner == .None {
+				let slotId = gameState.getSlotId(boardId: boardId, index: (x, y))
+				let slotOwner = gameState.getSlotOwner(slotId: slotId)
+				if slotOwner == .none {
 					slots.append((slotId, (x, y)))
 				}
 			}
@@ -92,19 +93,19 @@ struct RandomMoveBot {
 		guard slots.count > 0 else {
 			fatalError("It's my turn but there are no valid slots on which to play")
 		}
-		let rnd = randomInt(slots.count)
+		let rnd = randomInt(max: slots.count)
 		let slotId = slots[Int(rnd)]
-		gameState.setSlotOwner(slotId.0, type: self.piece)
-		let _ = gameState.getBoardOwner(boardId)
-		gameState.endTurn(self.gameId)
+		let _ = gameState.setSlotOwner(slotId: slotId.0, type: self.piece)
+		let _ = gameState.getBoardOwner(boardId: boardId)
+		let _ = gameState.endTurn(gameId: self.gameId)
 		
 		do {
-			let boardId = gameState.getBoardId(gameId, index: slotId.1)
-			let boardOwner = gameState.getBoardOwner(boardId)
-			if boardOwner == .None {
-				gameState.setActiveBoard(gameId, index: slotId.1)
+			let boardId = gameState.getBoardId(gameId: gameId, index: slotId.1)
+			let boardOwner = gameState.getBoardOwner(boardId: boardId)
+			if boardOwner == .none {
+				gameState.setActiveBoard(gameId: gameId, index: slotId.1)
 			} else {
-				gameState.setActiveBoard(gameId, index: (invalidId, invalidId))
+				gameState.setActiveBoard(gameId: gameId, index: (invalidId, invalidId))
 			}
 		}
 	}

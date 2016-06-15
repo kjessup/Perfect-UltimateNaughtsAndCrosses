@@ -27,7 +27,7 @@ PerfectServerModuleInit()
 do {
     
     // Launch the HTTP server on port 8181
-    try HTTPServer(documentRoot: webRoot).start(port: 8181)
+    try HTTPServer(documentRoot: "./webroot").start(port: 8181)
     
 } catch PerfectError.networkError(let err, let msg) {
     print("Network error thrown: \(err) \(msg)")

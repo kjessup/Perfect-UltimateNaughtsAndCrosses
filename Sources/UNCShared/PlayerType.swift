@@ -6,6 +6,6 @@
 //  Copyright © 2016 PerfectlySoft. All rights reserved.
 //
 
-enum PlayerType: Int {
+public enum PlayerType: Int {
 	case Bot, MultiPlayer
 }
