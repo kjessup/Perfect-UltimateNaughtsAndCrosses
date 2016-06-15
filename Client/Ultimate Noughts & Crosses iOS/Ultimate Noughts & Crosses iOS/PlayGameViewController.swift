@@ -15,24 +15,24 @@ class PlayGameViewController: UIViewController {
 	@IBOutlet weak var concedeButton: UIButton!
 	
 	var requiredBoard: GridIndex?
-	var myPiece = PieceType.None
+	var myPiece = PieceType.none
 	var gameOn = false
 	
-	override func viewWillAppear(animated: Bool) {
+	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		
 		self.initializeField()
 	}
 	
-	override func viewDidAppear(animated: Bool) {
+	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		
 		let gameState = GameStateClient()
 		if let playerId = gameState.savedPlayerId {
-			gameState.getActiveGame(playerId) {
+			gameState.getActiveGame(playerId: playerId) {
 				responseValue in
 				
-				if case .SuccessInt2(_, let pieceType) = responseValue {
+				if case .successInt2(_, let pieceType) = responseValue {
 					self.myPiece = PieceType(rawValue: pieceType)!
 					self.gameOn = true
 					self.updateCurrentState()
@@ -45,12 +45,12 @@ class PlayGameViewController: UIViewController {
 		for boardY in 0..<ultimateSlotCount {
 			for boardX in 0..<ultimateSlotCount {
 				
-				if let board = self.getBoardStack((boardX, boardY)) {
+				if let board = self.getBoardStack(index: (boardX, boardY)) {
 					
 					for tileY in 0..<ultimateSlotCount {
 						for tileX in 0..<ultimateSlotCount {
 							
-							if let tile = self.getBoardTile(board, index: (tileX, tileY)) {
+							if let tile = self.getBoardTile(board: board, index: (tileX, tileY)) {
 								
 								let tapGesture = UITapGestureRecognizer(target: self, action: #selector(PlayGameViewController.tileTapped))
 								tile.addGestureRecognizer(tapGesture)
@@ -71,15 +71,15 @@ class PlayGameViewController: UIViewController {
 				responseValue in
 				
 				dispatch_async(dispatch_get_main_queue()) {
-					if case .SuccessState(let state) = responseValue {
-						self.updateCurrentState(state)
+					if case .successState(let state) = responseValue {
+						self.updateCurrentState(state: state)
 					} else {
 						
 					}
 				}
 			}
 		} else {
-			self.dismissViewControllerAnimated(true) {}
+			self.dismiss(animated: true) {}
 		}
 	}
 	
@@ -92,12 +92,12 @@ class PlayGameViewController: UIViewController {
 			let (board, tile) = tile.taggedLocation
 			
 			let gameState = GameStateClient()
-			gameState.playPieceOnBoard(gameState.savedPlayerId!, board: board, slotIndex: tile) {
+			gameState.playPieceOnBoard(playerId: gameState.savedPlayerId!, board: board, slotIndex: tile) {
 				responseValue in
 				
 				dispatch_async(dispatch_get_main_queue()) {
-					if case .SuccessState(let state) = responseValue {
-						self.updateCurrentState(state)
+					if case .successState(let state) = responseValue {
+						self.updateCurrentState(state: state)
 					} else {
 						
 					}
@@ -150,7 +150,7 @@ class PlayGameViewController: UIViewController {
 			
 			if let state = state {
 				dispatch_async(dispatch_get_main_queue()) {
-					self.updateCurrentState(state)
+					self.updateCurrentState(state: state)
 				}
 			}
 		}
@@ -158,10 +158,10 @@ class PlayGameViewController: UIViewController {
 	
 	func fetchCurrentState(callback: (UltimateState?) -> ()) {
 		let gameState = GameStateClient()
-		gameState.getCurrentState(gameState.savedPlayerId!) {
+		gameState.getCurrentState(playerId: gameState.savedPlayerId!) {
 			responseValue in
 			
-			if case .SuccessState(let state) = responseValue {
+			if case .successState(let state) = responseValue {
 				callback(state)
 			}
 		}
@@ -175,10 +175,10 @@ class PlayGameViewController: UIViewController {
 			for boardX in 0..<ultimateSlotCount {
 				
 				let boardIndex = (boardX, boardY)
-				if let boardView = self.getBoardStack(boardIndex) {
+				if let boardView = self.getBoardStack(index: boardIndex) {
 					
 					let board = field[boardIndex]
-					if board.owner != .None {
+					if board.owner != .none {
 						boardView.alpha = 0.4
 						if boardView.arrangedSubviews.count > 1 {
 							
@@ -187,7 +187,7 @@ class PlayGameViewController: UIViewController {
 							
 							let imageView = UIImageView(frame: boardView.bounds)
 							boardView.addArrangedSubview(imageView)
-							if board.owner == .Ex {
+							if board.owner == .ex {
 								imageView.image = UIImage(named: "Ex")
 							} else {
 								imageView.image = UIImage(named: "Oh")
@@ -199,7 +199,7 @@ class PlayGameViewController: UIViewController {
 						boardView.alpha = 0.4
 					}
 					
-					if board.owner != .None {
+					if board.owner != .none {
 						continue
 					}
 					
@@ -207,12 +207,12 @@ class PlayGameViewController: UIViewController {
 						for slotX in 0..<ultimateSlotCount {
 							
 							let slotIndex = (slotX, slotY)
-							if let slotView = self.getBoardTile(boardView, index: slotIndex) {
+							if let slotView = self.getBoardTile(board: boardView, index: slotIndex) {
 								
 								let slot = board[slotIndex]
-								if case .Ex = slot {
+								if case .ex = slot {
 									slotView.image = UIImage(named: "Ex")
-								} else if case .Oh = slot {
+								} else if case .oh = slot {
 									slotView.image = UIImage(named: "Oh")
 								}
 							}
@@ -225,30 +225,30 @@ class PlayGameViewController: UIViewController {
 	
 	func updateCurrentState(state: UltimateState) {
 		switch state {
-		case .GameOver(let winningPiece, let field):
-			self.updateField(field, activeBoard: (invalidId, invalidId))
-			if winningPiece == .Draw {
+		case .gameOver(let winningPiece, let field):
+			self.updateField(field: field, activeBoard: (invalidId, invalidId))
+			if winningPiece == .draw {
 				self.statusLabel.text = "The game was a draw!"
-			} else if winningPiece == (self.myPiece == .Ex ? .ExWin : .OhWin) {
+			} else if winningPiece == (self.myPiece == .ex ? .exWin : .ohWin) {
 				self.statusLabel.text = "You won!"
 			} else {
 				self.statusLabel.text = "You lost!"
 			}
 			self.gameOn = false
-			self.concedeButton.setTitle("Main Menu", forState: .Normal)
-		case .InPlay(let turnPiece, let board, let field):
-			self.updateField(field, activeBoard: board)
+			self.concedeButton.setTitle("Main Menu", for: [])
+		case .inPlay(let turnPiece, let board, let field):
+			self.updateField(field: field, activeBoard: board)
 			if turnPiece == self.myPiece {
 				self.statusLabel.text = "It is your move."
 			} else {
 				self.statusLabel.text = "Opponent's move…"
 				self.queueStatusCheck()
 			}
-		case .InvalidMove:
+		case .invalidMove:
 			self.statusLabel.text = "You made an invalid move."
-		case .Waiting:
+		case .waiting:
 			self.statusLabel.text = "Opponent's move…"
-		case .None:
+		case .none:
 			()
 		}
 	}

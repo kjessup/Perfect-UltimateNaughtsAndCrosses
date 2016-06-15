@@ -14,25 +14,25 @@ class RegisterNickViewController: UIViewController {
 
 	@IBOutlet weak var nickText: UITextField!
 	
-	override func viewDidAppear(animated: Bool) {
+	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		
 		var gameState = GameStateClient()
 		if let playerId = gameState.savedPlayerId {
 			// validate it
-			gameState.getPlayerNick(playerId) {
+			gameState.getPlayerNick(playerId: playerId) {
 				response in
 				
 				dispatch_async(dispatch_get_main_queue()) {
-					if case .SuccessString(let nick) = response {
+					if case .successString(let nick) = response {
 						GameStateClient.retrievedPlayerNick = nick
-						self.performSegueWithIdentifier(nickRegisteredSegue, sender: nil)
-					} else if case .Error(-1004, let msg) = response {
+						self.performSegue(withIdentifier: nickRegisteredSegue, sender: nil)
+					} else if case .error(-1004, let msg) = response {
 						
-						let alert = UIAlertController(title: "Error Contacting Server", message: "\(msg) (-1004)", preferredStyle: .Alert)
-						let action = UIAlertAction(title: "OK", style: .Default) { _ in }
+						let alert = UIAlertController(title: "Error Contacting Server", message: "\(msg) (-1004)", preferredStyle: .alert)
+						let action = UIAlertAction(title: "OK", style: .default) { _ in }
 						alert.addAction(action)
-						self.presentViewController(alert, animated: true) { }
+						self.present(alert, animated: true) { }
 						
 					} else {
 						// player id was not valid. reset it
@@ -52,27 +52,27 @@ class RegisterNickViewController: UIViewController {
 		if let nickText = self.nickText.text where !nickText.isEmpty{
 			var gameState = GameStateClient()
 			
-			gameState.createPlayer(nickText) {
+			gameState.createPlayer(nick: nickText) {
 				response in
 				
 				dispatch_async(dispatch_get_main_queue()) {
 					
-					if case .SuccessInt(let playerId) = response {
+					if case .successInt(let playerId) = response {
 						gameState.savedPlayerId = playerId
-						self.performSegueWithIdentifier(nickRegisteredSegue, sender: nil)
-					} else if case .Error(let code, let msg) = response {
+						self.performSegue(withIdentifier: nickRegisteredSegue, sender: nil)
+					} else if case .error(let code, let msg) = response {
 						
-						let alert = UIAlertController(title: "Error registering nick", message: "\(msg) (\(code))", preferredStyle: .Alert)
-						let action = UIAlertAction(title: "OK", style: .Default) { _ in }
+						let alert = UIAlertController(title: "Error registering nick", message: "\(msg) (\(code))", preferredStyle: .alert)
+						let action = UIAlertAction(title: "OK", style: .default) { _ in }
 						alert.addAction(action)
-						self.presentViewController(alert, animated: true) { }
+						self.present(alert, animated: true) { }
 						
 					} else {
 						
-						let alert = UIAlertController(title: "Error registering nick", message: "Unexpected response type \(response)", preferredStyle: .Alert)
-						let action = UIAlertAction(title: "OK", style: .Default) { _ in }
+						let alert = UIAlertController(title: "Error registering nick", message: "Unexpected response type \(response)", preferredStyle: .alert)
+						let action = UIAlertAction(title: "OK", style: .default) { _ in }
 						alert.addAction(action)
-						self.presentViewController(alert, animated: true) { }						
+						self.present(alert, animated: true) { }						
 					}
 				}
 			}

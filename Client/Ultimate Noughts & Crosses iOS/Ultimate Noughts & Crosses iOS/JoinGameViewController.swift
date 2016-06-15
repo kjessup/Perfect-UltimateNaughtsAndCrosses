@@ -12,37 +12,37 @@ class JoinGameViewController: UIViewController {
 
 	var waiting = false
 	
-	override func viewDidAppear(animated: Bool) {
+	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		
 		let gameState = GameStateClient()
 		if let playerId = gameState.savedPlayerId {
-			gameState.createGame(playerId, gameType: PlayerType.MultiPlayer) {
+			gameState.createGame(playerId: playerId, gameType: PlayerType.MultiPlayer) {
 				response in
 				
 				dispatch_async(dispatch_get_main_queue()) {
 					
-					if case .SuccessInt(let gameId) = response {
+					if case .successInt(let gameId) = response {
 						
 						if gameId != invalidId {
-							self.dismissViewControllerAnimated(true) {}
+							self.dismiss(animated: true) {}
 						} else {
 							self.startWaiting()
 						}
 						
-					} else if case .Error(let code, let msg) = response {
+					} else if case .error(let code, let msg) = response {
 						
-						let alert = UIAlertController(title: "Error Starting Game", message: "\(msg) (\(code))", preferredStyle: .Alert)
-						let action = UIAlertAction(title: "OK", style: .Default) { _ in self.dismissViewControllerAnimated(true) {} }
+						let alert = UIAlertController(title: "Error Starting Game", message: "\(msg) (\(code))", preferredStyle: .alert)
+						let action = UIAlertAction(title: "OK", style: .default) { _ in self.dismiss(animated: true) {} }
 						alert.addAction(action)
-						self.presentViewController(alert, animated: true) { }
+						self.present(alert, animated: true) { }
 						
 					} else {
 						
-						let alert = UIAlertController(title: "Error Starting Game", message: "Unexpected response type \(response)", preferredStyle: .Alert)
-						let action = UIAlertAction(title: "OK", style: .Default) { _ in self.dismissViewControllerAnimated(true) {} }
+						let alert = UIAlertController(title: "Error Starting Game", message: "Unexpected response type \(response)", preferredStyle: .alert)
+						let action = UIAlertAction(title: "OK", style: .default) { _ in self.dismiss(animated: true) {} }
 						alert.addAction(action)
-						self.presentViewController(alert, animated: true) { }
+						self.present(alert, animated: true) { }
 					}
 				}
 			}
@@ -55,7 +55,7 @@ class JoinGameViewController: UIViewController {
 			response in
 			
 			dispatch_async(dispatch_get_main_queue()) {
-				self.dismissViewControllerAnimated(true) {}
+				self.dismiss(animated: true) {}
 			}
 		}
 	}
@@ -72,17 +72,17 @@ class JoinGameViewController: UIViewController {
 		
 		let gameState = GameStateClient()
 		if let playerId = gameState.savedPlayerId {
-			gameState.getActiveGame(playerId) { [weak self]
+			gameState.getActiveGame(playerId: playerId) { [weak self]
 				response in
 				
 				guard let me = self else {
 					return
 				}
 				
-				if case .SuccessInt2(let gameId, _) = response where gameId != invalidId {
+				if case .successInt2(let gameId, _) = response where gameId != invalidId {
 					me.waiting = false
 					dispatch_async(dispatch_get_main_queue()) {
-						me.dismissViewControllerAnimated(true) {}
+						me.dismiss(animated: true) {}
 					}
 				} else {
 					me.queueStatusCheck()

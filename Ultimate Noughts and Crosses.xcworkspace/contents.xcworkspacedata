@@ -2,9 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:/Users/kjessup/development/PerfectPresentation/UltimateNoughtsAndCrossesServer/Ultimate Noughts &amp; Crosses Server.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:Ultimate Noughts &amp; Crosses iOS/Ultimate Noughts &amp; Crosses iOS.xcodeproj">
+      location = "group:Client/Ultimate Noughts &amp; Crosses iOS/Ultimate Noughts &amp; Crosses iOS.xcodeproj">
    </FileRef>
 </Workspace>

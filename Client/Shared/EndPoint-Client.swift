@@ -9,11 +9,13 @@
 import Foundation
 
 extension EndPoint {
-	func replace(variables variables: [String]?) -> String {
+	func replace(variables: [String]?) -> String {
 		if var replacements = variables {
-			return self.rawValue.characters.split("/").map {
-					$0[$0.startIndex] != "{" ? String($0) : replacements.removeFirst().stringByAddingPercentEncodingWithAllowedCharacters(.URLHostAllowedCharacterSet())!
-				}.joinWithSeparator("/")
+            return self.rawValue.characters.split(separator: "/").map {
+					$0[$0.startIndex] != "{" ?
+                        String($0)
+                        : (replacements.removeFirst() as NSString).addingPercentEncoding(withAllowedCharacters: .urlHostAllowed())!
+				}.joined(separator: "/")
 		}
 		return self.rawValue
 	}

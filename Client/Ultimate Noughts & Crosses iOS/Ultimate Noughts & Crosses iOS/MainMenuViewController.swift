@@ -13,19 +13,19 @@ let joinGameSegue = "joinGame"
 
 class MainMenuViewController: UIViewController {
 
-	override func viewDidAppear(animated: Bool) {
+	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 
         let gameState = GameStateClient()
 		if let playerId = gameState.savedPlayerId {
-			gameState.getActiveGame(playerId) {
+			gameState.getActiveGame(playerId: playerId) {
 				responseValue in
 				
-				if case .SuccessInt2(let gameId, _) = responseValue {
+				if case .successInt2(let gameId, _) = responseValue {
 					if gameId != invalidId {
 						// let's continue playing
 						dispatch_async(dispatch_get_main_queue()) {
-							self.performSegueWithIdentifier(playGameSegue, sender: nil)
+							self.performSegue(withIdentifier: playGameSegue, sender: nil)
 						}
 					} else {
 						
@@ -38,33 +38,33 @@ class MainMenuViewController: UIViewController {
     }
 	
 	@IBAction func joinGame() {
-		self.performSegueWithIdentifier(joinGameSegue, sender: nil)
+		self.performSegue(withIdentifier: joinGameSegue, sender: nil)
 	}
 	
 	@IBAction func botGame() {
 		let gs = GameStateClient()
 		if let playerId = gs.savedPlayerId {
 		
-			gs.createGame(playerId, gameType: PlayerType.Bot) {
+			gs.createGame(playerId: playerId, gameType: PlayerType.Bot) {
 				response in
 				
 				dispatch_async(dispatch_get_main_queue()) {
 					
-					if case .SuccessInt(_) = response {
-						self.performSegueWithIdentifier(playGameSegue, sender: nil)
-					} else if case .Error(let code, let msg) = response {
+					if case .successInt(_) = response {
+						self.performSegue(withIdentifier: playGameSegue, sender: nil)
+					} else if case .error(let code, let msg) = response {
 						
-						let alert = UIAlertController(title: "Error Starting Game", message: "\(msg) (\(code))", preferredStyle: .Alert)
-						let action = UIAlertAction(title: "OK", style: .Default) { _ in }
+						let alert = UIAlertController(title: "Error Starting Game", message: "\(msg) (\(code))", preferredStyle: .alert)
+						let action = UIAlertAction(title: "OK", style: .default) { _ in }
 						alert.addAction(action)
-						self.presentViewController(alert, animated: true) { }
+						self.present(alert, animated: true) { }
 						
 					} else {
 						
-						let alert = UIAlertController(title: "Error Starting Game", message: "Unexpected response type \(response)", preferredStyle: .Alert)
-						let action = UIAlertAction(title: "OK", style: .Default) { _ in }
+						let alert = UIAlertController(title: "Error Starting Game", message: "Unexpected response type \(response)", preferredStyle: .alert)
+						let action = UIAlertAction(title: "OK", style: .default) { _ in }
 						alert.addAction(action)
-						self.presentViewController(alert, animated: true) { }
+						self.present(alert, animated: true) { }
 					}
 				}
 			}

@@ -1,0 +1,44 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "B88E44917314B85E9DFECC57E2D7F1E24596467E",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "E2306DAE0C98D148736A05084B6FAB44F03B4909" : 0,
+    "B88E44917314B85E9DFECC57E2D7F1E24596467E" : 0,
+    "3801A7CF6E91AB46A88D2E7DFA5833CC5B7BE632" : 0,
+    "4E35F6E25A3BF92186FC93EDD56ECFCADC8D0E3B" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "999ADD74-D512-4FF8-9615-40879C94D1C4",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "E2306DAE0C98D148736A05084B6FAB44F03B4909" : "..\/PerfectPresentation\/PerfectLib",
+    "B88E44917314B85E9DFECC57E2D7F1E24596467E" : "Perfect-UltimateNaughtsAndCrosses\/",
+    "3801A7CF6E91AB46A88D2E7DFA5833CC5B7BE632" : "..\/PerfectPresentation\/SQLite",
+    "4E35F6E25A3BF92186FC93EDD56ECFCADC8D0E3B" : "..\/PerfectPresentation\/PerfectServer"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Ultimate Noughts and Crosses",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Ultimate Noughts and Crosses.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/PerfectlySoft\/Perfect-SQLite.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "3801A7CF6E91AB46A88D2E7DFA5833CC5B7BE632"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/PerfectlySoft\/PerfectServer.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "4E35F6E25A3BF92186FC93EDD56ECFCADC8D0E3B"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/kjessup\/Perfect-UltimateNaughtsAndCrosses.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "B88E44917314B85E9DFECC57E2D7F1E24596467E"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/PerfectlySoft\/Perfect.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "E2306DAE0C98D148736A05084B6FAB44F03B4909"
+    }
+  ]
+}
