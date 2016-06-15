@@ -1,5 +1,6 @@
 import XCTest
-@testable import PerfectUltimateNaughtsAndCrosses
+import UNCShared
+@testable import UNCServer
 
 class PerfectUltimateNaughtsAndCrossesTests: XCTestCase {
     
@@ -17,17 +18,17 @@ class PerfectUltimateNaughtsAndCrossesTests: XCTestCase {
     func testCreatePlayer() {
         let playerNick = "player 1"
         let gs = GameStateServer()
-        let playerId = gs.createPlayer(playerNick)
+        let playerId = gs.createPlayer(nick: playerNick)
         XCTAssert(playerId != invalidId)
     }
     
     func testCreatePlayerFail() {
         let playerNick = "player 1"
         let gs = GameStateServer()
-        let playerId = gs.createPlayer(playerNick)
+        let playerId = gs.createPlayer(nick: playerNick)
         XCTAssert(playerId != invalidId)
         
-        let playerId2 = gs.createPlayer(playerNick)
+        let playerId2 = gs.createPlayer(nick: playerNick)
         XCTAssert(playerId2 == invalidId)
     }
     
@@ -36,8 +37,8 @@ class PerfectUltimateNaughtsAndCrossesTests: XCTestCase {
         let player1Nick = "player 1"
         let player2Nick = "player 2"
         let gs = GameStateServer()
-        let player1Id = gs.createPlayer(player1Nick)
-        let player2Id = gs.createPlayer(player2Nick)
+        let player1Id = gs.createPlayer(nick: player1Nick)
+        let player2Id = gs.createPlayer(nick: player2Nick)
         
         XCTAssert(player1Id != invalidId)
         XCTAssert(player2Id != invalidId)
@@ -53,8 +54,8 @@ class PerfectUltimateNaughtsAndCrossesTests: XCTestCase {
         let player1Nick = "player 1"
         let player2Nick = "player 2"
         let gs = GameStateServer()
-        let player1Id = gs.createPlayer(player1Nick)
-        let player2Id = gs.createPlayer(player2Nick)
+        let player1Id = gs.createPlayer(nick: player1Nick)
+        let player2Id = gs.createPlayer(nick: player2Nick)
         
         XCTAssert(player1Id != invalidId)
         XCTAssert(player2Id != invalidId)
@@ -64,9 +65,9 @@ class PerfectUltimateNaughtsAndCrossesTests: XCTestCase {
         XCTAssert(gameId != invalidId)
         XCTAssert(fieldId != invalidId)
         
-        let (fetchedId, piece) = gs.getActiveGameForPlayer(player1Id)
+        let (fetchedId, piece) = gs.getActiveGameForPlayer(playerId: player1Id)
         XCTAssert(fetchedId == gameId)
-        XCTAssert(piece == .Ex)
+        XCTAssert(piece == .ex)
     }
     
     func testGetBoardIds() {
@@ -74,8 +75,8 @@ class PerfectUltimateNaughtsAndCrossesTests: XCTestCase {
         let player1Nick = "player 1"
         let player2Nick = "player 2"
         let gs = GameStateServer()
-        let player1Id = gs.createPlayer(player1Nick)
-        let player2Id = gs.createPlayer(player2Nick)
+        let player1Id = gs.createPlayer(nick: player1Nick)
+        let player2Id = gs.createPlayer(nick: player2Nick)
         
         XCTAssert(player1Id != invalidId)
         XCTAssert(player2Id != invalidId)
@@ -88,7 +89,7 @@ class PerfectUltimateNaughtsAndCrossesTests: XCTestCase {
         for x in 0..<ultimateSlotCount {
             for y in 0..<ultimateSlotCount {
                 
-                let boardId = gs.getBoardId(gameId, index: (x, y))
+                let boardId = gs.getBoardId(gameId: gameId, index: (x, y))
                 
                 XCTAssert(boardId != invalidId)
             }
@@ -100,8 +101,8 @@ class PerfectUltimateNaughtsAndCrossesTests: XCTestCase {
         let player1Nick = "player 1"
         let player2Nick = "player 2"
         let gs = GameStateServer()
-        let player1Id = gs.createPlayer(player1Nick)
-        let player2Id = gs.createPlayer(player2Nick)
+        let player1Id = gs.createPlayer(nick: player1Nick)
+        let player2Id = gs.createPlayer(nick: player2Nick)
         
         XCTAssert(player1Id != invalidId)
         XCTAssert(player2Id != invalidId)
@@ -114,14 +115,14 @@ class PerfectUltimateNaughtsAndCrossesTests: XCTestCase {
         for x in 0..<ultimateSlotCount {
             for y in 0..<ultimateSlotCount {
                 
-                let boardId = gs.getBoardId(gameId, index: (x, y))
+                let boardId = gs.getBoardId(gameId: gameId, index: (x, y))
                 
                 XCTAssert(boardId != invalidId)
                 
                 for x in 0..<ultimateSlotCount {
                     for y in 0..<ultimateSlotCount {
                         
-                        let slotId = gs.getSlotId(boardId, index: (x, y))
+                        let slotId = gs.getSlotId(boardId: boardId, index: (x, y))
                         
                         XCTAssert(slotId != invalidId)
                     }
@@ -135,8 +136,8 @@ class PerfectUltimateNaughtsAndCrossesTests: XCTestCase {
         let player1Nick = "player 1"
         let player2Nick = "player 2"
         let gs = GameStateServer()
-        let player1Id = gs.createPlayer(player1Nick)
-        let player2Id = gs.createPlayer(player2Nick)
+        let player1Id = gs.createPlayer(nick: player1Nick)
+        let player2Id = gs.createPlayer(nick: player2Nick)
         
         XCTAssert(player1Id != invalidId)
         XCTAssert(player2Id != invalidId)
@@ -147,17 +148,17 @@ class PerfectUltimateNaughtsAndCrossesTests: XCTestCase {
         XCTAssert(fieldId != invalidId)
         
         for _ in 0..<5 {
-            let id1 = gs.getCurrentPlayer(gameId)
+            let id1 = gs.getActiveGameForPlayer(playerId: gameId)
             XCTAssert(id1.0 == player1Id)
-            XCTAssert(id1.1 == .Ex)
+            XCTAssert(id1.1 == .ex)
             
-            gs.endTurn(gameId)
+            gs.endTurn(gameId: gameId)
             
-            let id2 = gs.getCurrentPlayer(gameId)
+            let id2 = gs.getActiveGameForPlayer(playerId: gameId)
             XCTAssert(id2.0 == player2Id)
-            XCTAssert(id2.1 == .Oh)
+            XCTAssert(id2.1 == .oh)
             
-            gs.endTurn(gameId)
+            gs.endTurn(gameId: gameId)
         }
     }
     
@@ -166,8 +167,8 @@ class PerfectUltimateNaughtsAndCrossesTests: XCTestCase {
         let player1Nick = "player 1"
         let player2Nick = "player 2"
         let gs = GameStateServer()
-        let player1Id = gs.createPlayer(player1Nick)
-        let player2Id = gs.createPlayer(player2Nick)
+        let player1Id = gs.createPlayer(nick: player1Nick)
+        let player2Id = gs.createPlayer(nick: player2Nick)
         
         XCTAssert(player1Id != invalidId)
         XCTAssert(player2Id != invalidId)
@@ -178,10 +179,10 @@ class PerfectUltimateNaughtsAndCrossesTests: XCTestCase {
             XCTAssert(gameId != invalidId)
             XCTAssert(fieldId != invalidId)
             
-            gs.endGame(gameId, winner: .Ex)
+            gs.endGame(gameId: gameId, winner: .ex)
             
-            let win = gs.getGameWinner(gameId)
-            XCTAssert(win == .ExWin)
+            let win = gs.getGameWinner(gameId: gameId)
+            XCTAssert(win == .exWin)
         }
         
         do {
@@ -190,10 +191,10 @@ class PerfectUltimateNaughtsAndCrossesTests: XCTestCase {
             XCTAssert(gameId != invalidId)
             XCTAssert(fieldId != invalidId)
             
-            gs.endGame(gameId, winner: .Oh)
+            gs.endGame(gameId: gameId, winner: .oh)
             
-            let win = gs.getGameWinner(gameId)
-            XCTAssert(win == .OhWin)
+            let win = gs.getGameWinner(gameId: gameId)
+            XCTAssert(win == .ohWin)
         }
     }
     
@@ -202,8 +203,8 @@ class PerfectUltimateNaughtsAndCrossesTests: XCTestCase {
         let player1Nick = "player 1"
         let player2Nick = "player 2"
         let gs = GameStateServer()
-        let player1Id = gs.createPlayer(player1Nick)
-        let player2Id = gs.createPlayer(player2Nick)
+        let player1Id = gs.createPlayer(nick: player1Nick)
+        let player2Id = gs.createPlayer(nick: player2Nick)
         XCTAssert(player1Id != invalidId)
         XCTAssert(player2Id != invalidId)
         let (gameId, _) = gs.createGame(playerX: player1Id, playerO: player2Id)
@@ -216,21 +217,21 @@ class PerfectUltimateNaughtsAndCrossesTests: XCTestCase {
                     //xxx
                     //xoo
                     //oxo
-                    (.Ex, 0, 0), (.Oh, 1, 1), (.Ex, 2, 0), (.Oh, 2, 1), (.Ex, 1, 2), (.Oh, 0, 2), (.Ex, 0, 1), (.Oh, 2, 2), (.Ex, 1, 0)
+                    (.ex, 0, 0), (.oh, 1, 1), (.ex, 2, 0), (.oh, 2, 1), (.ex, 1, 2), (.oh, 0, 2), (.ex, 0, 1), (.oh, 2, 2), (.ex, 1, 0)
                 ],
                 [
                     // across mid
                     //xoo
                     //xxx
                     //oxo
-                    (.Ex, 0, 0), (.Oh, 1, 0), (.Ex, 2, 1), (.Oh, 2, 0), (.Ex, 1, 2), (.Oh, 0, 2), (.Ex, 0, 1), (.Oh, 2, 2), (.Ex, 1, 1)
+                    (.ex, 0, 0), (.oh, 1, 0), (.ex, 2, 1), (.oh, 2, 0), (.ex, 1, 2), (.oh, 0, 2), (.ex, 0, 1), (.oh, 2, 2), (.ex, 1, 1)
                 ],
                 [
                     // across bottom
                     //oxo
                     //xoo
                     //xxx
-                    (.Ex, 0, 2), (.Oh, 1, 1), (.Ex, 1, 0), (.Oh, 2, 1), (.Ex, 1, 2), (.Oh, 0, 0), (.Ex, 0, 1), (.Oh, 2, 0), (.Ex, 2, 2)
+                    (.ex, 0, 2), (.oh, 1, 1), (.ex, 1, 0), (.oh, 2, 1), (.ex, 1, 2), (.oh, 0, 0), (.ex, 0, 1), (.oh, 2, 0), (.ex, 2, 2)
                 ]
             ],
             [
@@ -239,21 +240,21 @@ class PerfectUltimateNaughtsAndCrossesTests: XCTestCase {
                     //xoo
                     //xox
                     //xxo
-                    (.Ex, 0, 0), (.Oh, 1, 0), (.Ex, 2, 1), (.Oh, 2, 0), (.Ex, 1, 2), (.Oh, 1, 1), (.Ex, 0, 1), (.Oh, 2, 2), (.Ex, 0, 2)
+                    (.ex, 0, 0), (.oh, 1, 0), (.ex, 2, 1), (.oh, 2, 0), (.ex, 1, 2), (.oh, 1, 1), (.ex, 0, 1), (.oh, 2, 2), (.ex, 0, 2)
                 ],
                 [
                     // down mid
                     //oxo
                     //oxx
                     //xxo
-                    (.Ex, 1, 0), (.Oh, 0, 0), (.Ex, 2, 1), (.Oh, 2, 0), (.Ex, 0, 2), (.Oh, 0, 1), (.Ex, 1, 1), (.Oh, 2, 2), (.Ex, 1, 2)
+                    (.ex, 1, 0), (.oh, 0, 0), (.ex, 2, 1), (.oh, 2, 0), (.ex, 0, 2), (.oh, 0, 1), (.ex, 1, 1), (.oh, 2, 2), (.ex, 1, 2)
                 ],
                 [
                     // down right
                     //oxx
                     //oox
                     //xox
-                    (.Ex, 2, 0), (.Oh, 0, 0), (.Ex, 2, 1), (.Oh, 1, 1), (.Ex, 0, 2), (.Oh, 0, 1), (.Ex, 1, 0), (.Oh, 1, 2), (.Ex, 2, 2)
+                    (.ex, 2, 0), (.oh, 0, 0), (.ex, 2, 1), (.oh, 1, 1), (.ex, 0, 2), (.oh, 0, 1), (.ex, 1, 0), (.oh, 1, 2), (.ex, 2, 2)
                 ]
             ],
             [
@@ -262,41 +263,41 @@ class PerfectUltimateNaughtsAndCrossesTests: XCTestCase {
                     //xxo
                     //oxo
                     //xox
-                    (.Ex, 0, 0), (.Oh, 2, 0), (.Ex, 1, 1), (.Oh, 2, 1), (.Ex, 0, 2), (.Oh, 0, 1), (.Ex, 1, 0), (.Oh, 1, 2), (.Ex, 2, 2)
+                    (.ex, 0, 0), (.oh, 2, 0), (.ex, 1, 1), (.oh, 2, 1), (.ex, 0, 2), (.oh, 0, 1), (.ex, 1, 0), (.oh, 1, 2), (.ex, 2, 2)
                 ],
                 [
                     // diag from right
                     //oxx
                     //oxo
                     //xox
-                    (.Ex, 2, 2), (.Oh, 0, 0), (.Ex, 1, 1), (.Oh, 2, 1), (.Ex, 0, 2), (.Oh, 0, 1), (.Ex, 1, 0), (.Oh, 1, 2), (.Ex, 2, 0)
+                    (.ex, 2, 2), (.oh, 0, 0), (.ex, 1, 1), (.oh, 2, 1), (.ex, 0, 2), (.oh, 0, 1), (.ex, 1, 0), (.oh, 1, 2), (.ex, 2, 0)
                 ],
                 [
                     // diag from right (dupe for balance)
                     //oxx
                     //oxo
                     //xox
-                    (.Ex, 2, 2), (.Oh, 0, 0), (.Ex, 1, 1), (.Oh, 2, 1), (.Ex, 0, 2), (.Oh, 0, 1), (.Ex, 1, 0), (.Oh, 1, 2), (.Ex, 2, 0)
+                    (.ex, 2, 2), (.oh, 0, 0), (.ex, 1, 1), (.oh, 2, 1), (.ex, 0, 2), (.oh, 0, 1), (.ex, 1, 0), (.oh, 1, 2), (.ex, 2, 0)
                 ]
             ]
         ]
         
         for y in 0..<ultimateSlotCount {
             for x in 0..<ultimateSlotCount {
-                let boardId = gs.getBoardId(gameId, index: (x, y))
+                let boardId = gs.getBoardId(gameId: gameId, index: (x, y))
                 let sequence = sequences[x][y]
                 for (p, x, y) in sequence {
-                    let owner = gs.getBoardOwner(boardId)
-                    XCTAssert(owner == .None, "Owner was \(owner)")
-                    let slotId = gs.getSlotId(boardId, index: (x, y))
+                    let owner = gs.getBoardOwner(boardId: boardId)
+                    XCTAssert(owner == .none, "Owner was \(owner)")
+                    let slotId = gs.getSlotId(boardId: boardId, index: (x, y))
                     XCTAssert(slotId != invalidId)
-                    let set = gs.setSlotOwner(slotId, type: p)
+                    let set = gs.setSlotOwner(slotId: slotId, type: p)
                     XCTAssert(set == true, "While setting \(x) \(y)")
-                    let get = gs.getSlotOwner(slotId)
+                    let get = gs.getSlotOwner(slotId: slotId)
                     XCTAssert(get == p)
                 }
-                let owner = gs.getBoardOwner(boardId)
-                XCTAssert(owner == .Ex)
+                let owner = gs.getBoardOwner(boardId: boardId)
+                XCTAssert(owner == .ex)
             }
         }
     }
@@ -305,8 +306,8 @@ class PerfectUltimateNaughtsAndCrossesTests: XCTestCase {
         let player1Nick = "player 1"
         let player2Nick = "player 2"
         let gs = GameStateServer()
-        let player1Id = gs.createPlayer(player1Nick)
-        let player2Id = gs.createPlayer(player2Nick)
+        let player1Id = gs.createPlayer(nick: player1Nick)
+        let player2Id = gs.createPlayer(nick: player2Nick)
         
         XCTAssert(player1Id != invalidId)
         XCTAssert(player2Id != invalidId)
@@ -316,21 +317,21 @@ class PerfectUltimateNaughtsAndCrossesTests: XCTestCase {
         XCTAssert(gameId != invalidId)
         XCTAssert(fieldId != invalidId)
         
-        let boardId = gs.getBoardId(gameId, index: (0, 0))
+        let boardId = gs.getBoardId(gameId: gameId, index: (0, 0))
         do {
-            let slotId = gs.getSlotId(boardId, index: (0, 0))
-            gs.setSlotOwner(slotId, type: .Ex)
+            let slotId = gs.getSlotId(boardId: boardId, index: (0, 0))
+            gs.setSlotOwner(slotId: slotId, type: .ex)
         }
         do {
-            let slotId = gs.getSlotId(boardId, index: (2, 2))
-            gs.setSlotOwner(slotId, type: .Ex)
+            let slotId = gs.getSlotId(boardId: boardId, index: (2, 2))
+            gs.setSlotOwner(slotId: slotId, type: .ex)
         }
         do {
-            let slotId = gs.getSlotId(boardId, index: (2, 0))
-            gs.setSlotOwner(slotId, type: .Oh)
+            let slotId = gs.getSlotId(boardId: boardId, index: (2, 0))
+            gs.setSlotOwner(slotId: slotId, type: .oh)
         }
         
-        let board = gs.getBoard(gameId, index: (0, 0))!
+        let board = gs.getBoard(gameId: gameId, index: (0, 0))!
         let boardDesc = board.description
         //		print("\(boardDesc)")
         
@@ -338,15 +339,15 @@ class PerfectUltimateNaughtsAndCrossesTests: XCTestCase {
         
         do {
             let exTst = board[(0, 0)]
-            XCTAssert(exTst == .Ex)
+            XCTAssert(exTst == .ex)
         }
         do {
             let exTst = board[(2, 2)]
-            XCTAssert(exTst == .Ex)
+            XCTAssert(exTst == .ex)
         }
         do {
             let exTst = board[(2, 0)]
-            XCTAssert(exTst == .Oh)
+            XCTAssert(exTst == .oh)
         }
     }
     
@@ -354,8 +355,8 @@ class PerfectUltimateNaughtsAndCrossesTests: XCTestCase {
         let player1Nick = "player 1"
         let player2Nick = "player 2"
         let gs = GameStateServer()
-        let player1Id = gs.createPlayer(player1Nick)
-        let player2Id = gs.createPlayer(player2Nick)
+        let player1Id = gs.createPlayer(nick: player1Nick)
+        let player2Id = gs.createPlayer(nick: player2Nick)
         
         XCTAssert(player1Id != invalidId)
         XCTAssert(player2Id != invalidId)
@@ -365,21 +366,21 @@ class PerfectUltimateNaughtsAndCrossesTests: XCTestCase {
         XCTAssert(gameId != invalidId)
         XCTAssert(fieldId != invalidId)
         
-        let boardId = gs.getBoardId(gameId, index: (1, 1))
+        let boardId = gs.getBoardId(gameId: gameId, index: (1, 1))
         do {
-            let slotId = gs.getSlotId(boardId, index: (0, 0))
-            gs.setSlotOwner(slotId, type: .Ex)
+            let slotId = gs.getSlotId(boardId: boardId, index: (0, 0))
+            gs.setSlotOwner(slotId: slotId, type: .ex)
         }
         do {
-            let slotId = gs.getSlotId(boardId, index: (2, 2))
-            gs.setSlotOwner(slotId, type: .Ex)
+            let slotId = gs.getSlotId(boardId: boardId, index: (2, 2))
+            gs.setSlotOwner(slotId: slotId, type: .ex)
         }
         do {
-            let slotId = gs.getSlotId(boardId, index: (2, 0))
-            gs.setSlotOwner(slotId, type: .Oh)
+            let slotId = gs.getSlotId(boardId: boardId, index: (2, 0))
+            gs.setSlotOwner(slotId: slotId, type: .oh)
         }
         
-        let field = gs.getField(gameId)!
+        let field = gs.getField(gameId: gameId)!
         
         //		print("\(field)")
         
@@ -391,15 +392,15 @@ class PerfectUltimateNaughtsAndCrossesTests: XCTestCase {
         
         do {
             let exTst = board[(0, 0)]
-            XCTAssert(exTst == .Ex)
+            XCTAssert(exTst == .ex)
         }
         do {
             let exTst = board[(2, 2)]
-            XCTAssert(exTst == .Ex)
+            XCTAssert(exTst == .ex)
         }
         do {
             let exTst = board[(2, 0)]
-            XCTAssert(exTst == .Oh)
+            XCTAssert(exTst == .oh)
         }
     }
     
@@ -408,8 +409,8 @@ class PerfectUltimateNaughtsAndCrossesTests: XCTestCase {
         let player1Nick = "player 1"
         let player2Nick = "player 2"
         let gs = GameStateServer()
-        let player1Id = gs.createPlayer(player1Nick)
-        let player2Id = gs.createPlayer(player2Nick)
+        let player1Id = gs.createPlayer(nick: player1Nick)
+        let player2Id = gs.createPlayer(nick: player2Nick)
         XCTAssert(player1Id != invalidId)
         XCTAssert(player2Id != invalidId)
         let (gameId, _) = gs.createGame(playerX: player1Id, playerO: player2Id)
@@ -422,21 +423,21 @@ class PerfectUltimateNaughtsAndCrossesTests: XCTestCase {
                     //xxx
                     //xoo
                     //oxo
-                    (.Ex, 0, 0), (.Oh, 1, 1), (.Ex, 2, 0), (.Oh, 2, 1), (.Ex, 1, 2), (.Oh, 0, 2), (.Ex, 0, 1), (.Oh, 2, 2), (.Ex, 1, 0)
+                    (.ex, 0, 0), (.oh, 1, 1), (.ex, 2, 0), (.oh, 2, 1), (.ex, 1, 2), (.oh, 0, 2), (.ex, 0, 1), (.oh, 2, 2), (.ex, 1, 0)
                 ],
                 [
                     // across mid
                     //xoo
                     //xxx
                     //oxo
-                    (.Ex, 0, 0), (.Oh, 1, 0), (.Ex, 2, 1), (.Oh, 2, 0), (.Ex, 1, 2), (.Oh, 0, 2), (.Ex, 0, 1), (.Oh, 2, 2), (.Ex, 1, 1)
+                    (.ex, 0, 0), (.oh, 1, 0), (.ex, 2, 1), (.oh, 2, 0), (.ex, 1, 2), (.oh, 0, 2), (.ex, 0, 1), (.oh, 2, 2), (.ex, 1, 1)
                 ],
                 [
                     // across bottom
                     //oxo
                     //xoo
                     //xxx
-                    (.Ex, 0, 2), (.Oh, 1, 1), (.Ex, 1, 0), (.Oh, 2, 1), (.Ex, 1, 2), (.Oh, 0, 0), (.Ex, 0, 1), (.Oh, 2, 0), (.Ex, 2, 2)
+                    (.ex, 0, 2), (.oh, 1, 1), (.ex, 1, 0), (.oh, 2, 1), (.ex, 1, 2), (.oh, 0, 0), (.ex, 0, 1), (.oh, 2, 0), (.ex, 2, 2)
                 ]
             ],
             [
@@ -445,21 +446,21 @@ class PerfectUltimateNaughtsAndCrossesTests: XCTestCase {
                     //xoo
                     //xox
                     //xxo
-                    (.Ex, 0, 0), (.Oh, 1, 0), (.Ex, 2, 1), (.Oh, 2, 0), (.Ex, 1, 2), (.Oh, 1, 1), (.Ex, 0, 1), (.Oh, 2, 2), (.Ex, 0, 2)
+                    (.ex, 0, 0), (.oh, 1, 0), (.ex, 2, 1), (.oh, 2, 0), (.ex, 1, 2), (.oh, 1, 1), (.ex, 0, 1), (.oh, 2, 2), (.ex, 0, 2)
                 ],
                 [
                     // down mid
                     //oxo
                     //oxx
                     //xxo
-                    (.Ex, 1, 0), (.Oh, 0, 0), (.Ex, 2, 1), (.Oh, 2, 0), (.Ex, 0, 2), (.Oh, 0, 1), (.Ex, 1, 1), (.Oh, 2, 2), (.Ex, 1, 2)
+                    (.ex, 1, 0), (.oh, 0, 0), (.ex, 2, 1), (.oh, 2, 0), (.ex, 0, 2), (.oh, 0, 1), (.ex, 1, 1), (.oh, 2, 2), (.ex, 1, 2)
                 ],
                 [
                     // down right
                     //oxx
                     //oox
                     //xox
-                    (.Ex, 2, 0), (.Oh, 0, 0), (.Ex, 2, 1), (.Oh, 1, 1), (.Ex, 0, 2), (.Oh, 0, 1), (.Ex, 1, 0), (.Oh, 1, 2), (.Ex, 2, 2)
+                    (.ex, 2, 0), (.oh, 0, 0), (.ex, 2, 1), (.oh, 1, 1), (.ex, 0, 2), (.oh, 0, 1), (.ex, 1, 0), (.oh, 1, 2), (.ex, 2, 2)
                 ]
             ],
             [
@@ -468,53 +469,53 @@ class PerfectUltimateNaughtsAndCrossesTests: XCTestCase {
                     //xxo
                     //oxo
                     //xox
-                    (.Ex, 0, 0), (.Oh, 2, 0), (.Ex, 1, 1), (.Oh, 2, 1), (.Ex, 0, 2), (.Oh, 0, 1), (.Ex, 1, 0), (.Oh, 1, 2), (.Ex, 2, 2)
+                    (.ex, 0, 0), (.oh, 2, 0), (.ex, 1, 1), (.oh, 2, 1), (.ex, 0, 2), (.oh, 0, 1), (.ex, 1, 0), (.oh, 1, 2), (.ex, 2, 2)
                 ],
                 [
                     // diag from right
                     //oxx
                     //oxo
                     //xox
-                    (.Ex, 2, 2), (.Oh, 0, 0), (.Ex, 1, 1), (.Oh, 2, 1), (.Ex, 0, 2), (.Oh, 0, 1), (.Ex, 1, 0), (.Oh, 1, 2), (.Ex, 2, 0)
+                    (.ex, 2, 2), (.oh, 0, 0), (.ex, 1, 1), (.oh, 2, 1), (.ex, 0, 2), (.oh, 0, 1), (.ex, 1, 0), (.oh, 1, 2), (.ex, 2, 0)
                 ],
                 [
                     // diag from right (dupe for balance)
                     //oxx
                     //oxo
                     //xox
-                    (.Ex, 2, 2), (.Oh, 0, 0), (.Ex, 1, 1), (.Oh, 2, 1), (.Ex, 0, 2), (.Oh, 0, 1), (.Ex, 1, 0), (.Oh, 1, 2), (.Ex, 2, 0)
+                    (.ex, 2, 2), (.oh, 0, 0), (.ex, 1, 1), (.oh, 2, 1), (.ex, 0, 2), (.oh, 0, 1), (.ex, 1, 0), (.oh, 1, 2), (.ex, 2, 0)
                 ]
             ]
         ]
         
         for y in 0..<ultimateSlotCount {
             for x in 0..<ultimateSlotCount {
-                let boardId = gs.getBoardId(gameId, index: (x, y))
+                let boardId = gs.getBoardId(gameId: gameId, index: (x, y))
                 let sequence = sequences[x][y]
                 for (p, x, y) in sequence {
-                    let owner = gs.getBoardOwner(boardId)
-                    XCTAssert(owner == .None, "Owner was \(owner)")
-                    let slotId = gs.getSlotId(boardId, index: (x, y))
+                    let owner = gs.getBoardOwner(boardId: boardId)
+                    XCTAssert(owner == .none, "Owner was \(owner)")
+                    let slotId = gs.getSlotId(boardId: boardId, index: (x, y))
                     XCTAssert(slotId != invalidId)
-                    let set = gs.setSlotOwner(slotId, type: p)
+                    let set = gs.setSlotOwner(slotId: slotId, type: p)
                     XCTAssert(set == true, "While setting \(x) \(y)")
-                    let get = gs.getSlotOwner(slotId)
+                    let get = gs.getSlotOwner(slotId: slotId)
                     XCTAssert(get == p)
                 }
-                let owner = gs.getBoardOwner(boardId)
-                XCTAssert(owner == .Ex)
+                let owner = gs.getBoardOwner(boardId: boardId)
+                XCTAssert(owner == .ex)
             }
         }
         
-        let field = gs.getField(gameId)
+        let field = gs.getField(gameId: gameId)
         XCTAssert(field != nil)
         let serialized = field!.serialize()
         //		print("\(serialized)")
-        var gen = serialized.characters.generate()
+        var gen = serialized.characters.makeIterator()
         
         for boardY in 0..<ultimateSlotCount {
             for boardX in 0..<ultimateSlotCount {
-                let board = gs.getBoard(gameId, index: (boardX, boardY))
+                let board = gs.getBoard(gameId: gameId, index: (boardX, boardY))
                 XCTAssert(board != nil)
                 for slotY in 0..<ultimateSlotCount {
                     for slotX in 0..<ultimateSlotCount {
@@ -539,8 +540,8 @@ class PerfectUltimateNaughtsAndCrossesTests: XCTestCase {
         let player1Nick = "player 1"
         let player2Nick = "player 2"
         let gs = GameStateServer()
-        let player1Id = gs.createPlayer(player1Nick)
-        let player2Id = gs.createPlayer(player2Nick)
+        let player1Id = gs.createPlayer(nick: player1Nick)
+        let player2Id = gs.createPlayer(nick: player2Nick)
         XCTAssert(player1Id != invalidId)
         XCTAssert(player2Id != invalidId)
         let (gameId, _) = gs.createGame(playerX: player1Id, playerO: player2Id)
@@ -553,21 +554,21 @@ class PerfectUltimateNaughtsAndCrossesTests: XCTestCase {
                     //xxx
                     //xoo
                     //oxo
-                    (.Ex, 0, 0), (.Oh, 1, 1), (.Ex, 2, 0), (.Oh, 2, 1), (.Ex, 1, 2), (.Oh, 0, 2), (.Ex, 0, 1), (.Oh, 2, 2), (.Ex, 1, 0)
+                    (.ex, 0, 0), (.oh, 1, 1), (.ex, 2, 0), (.oh, 2, 1), (.ex, 1, 2), (.oh, 0, 2), (.ex, 0, 1), (.oh, 2, 2), (.ex, 1, 0)
                 ],
                 [
                     // across mid
                     //xoo
                     //xxx
                     //oxo
-                    (.Ex, 0, 0), (.Oh, 1, 0), (.Ex, 2, 1), (.Oh, 2, 0), (.Ex, 1, 2), (.Oh, 0, 2), (.Ex, 0, 1), (.Oh, 2, 2), (.Ex, 1, 1)
+                    (.ex, 0, 0), (.oh, 1, 0), (.ex, 2, 1), (.oh, 2, 0), (.ex, 1, 2), (.oh, 0, 2), (.ex, 0, 1), (.oh, 2, 2), (.ex, 1, 1)
                 ],
                 [
                     // across bottom
                     //oxo
                     //xoo
                     //xxx
-                    (.Ex, 0, 2), (.Oh, 1, 1), (.Ex, 1, 0), (.Oh, 2, 1), (.Ex, 1, 2), (.Oh, 0, 0), (.Ex, 0, 1), (.Oh, 2, 0), (.Ex, 2, 2)
+                    (.ex, 0, 2), (.oh, 1, 1), (.ex, 1, 0), (.oh, 2, 1), (.ex, 1, 2), (.oh, 0, 0), (.ex, 0, 1), (.oh, 2, 0), (.ex, 2, 2)
                 ]
             ],
             [
@@ -576,21 +577,21 @@ class PerfectUltimateNaughtsAndCrossesTests: XCTestCase {
                     //xoo
                     //xox
                     //xxo
-                    (.Ex, 0, 0), (.Oh, 1, 0), (.Ex, 2, 1), (.Oh, 2, 0), (.Ex, 1, 2), (.Oh, 1, 1), (.Ex, 0, 1), (.Oh, 2, 2), (.Ex, 0, 2)
+                    (.ex, 0, 0), (.oh, 1, 0), (.ex, 2, 1), (.oh, 2, 0), (.ex, 1, 2), (.oh, 1, 1), (.ex, 0, 1), (.oh, 2, 2), (.ex, 0, 2)
                 ],
                 [
                     // down mid
                     //oxo
                     //oxx
                     //xxo
-                    (.Ex, 1, 0), (.Oh, 0, 0), (.Ex, 2, 1), (.Oh, 2, 0), (.Ex, 0, 2), (.Oh, 0, 1), (.Ex, 1, 1), (.Oh, 2, 2), (.Ex, 1, 2)
+                    (.ex, 1, 0), (.oh, 0, 0), (.ex, 2, 1), (.oh, 2, 0), (.ex, 0, 2), (.oh, 0, 1), (.ex, 1, 1), (.oh, 2, 2), (.ex, 1, 2)
                 ],
                 [
                     // down right
                     //oxx
                     //oox
                     //xox
-                    (.Ex, 2, 0), (.Oh, 0, 0), (.Ex, 2, 1), (.Oh, 1, 1), (.Ex, 0, 2), (.Oh, 0, 1), (.Ex, 1, 0), (.Oh, 1, 2), (.Ex, 2, 2)
+                    (.ex, 2, 0), (.oh, 0, 0), (.ex, 2, 1), (.oh, 1, 1), (.ex, 0, 2), (.oh, 0, 1), (.ex, 1, 0), (.oh, 1, 2), (.ex, 2, 2)
                 ]
             ],
             [
@@ -599,49 +600,49 @@ class PerfectUltimateNaughtsAndCrossesTests: XCTestCase {
                     //xxo
                     //oxo
                     //xox
-                    (.Ex, 0, 0), (.Oh, 2, 0), (.Ex, 1, 1), (.Oh, 2, 1), (.Ex, 0, 2), (.Oh, 0, 1), (.Ex, 1, 0), (.Oh, 1, 2), (.Ex, 2, 2)
+                    (.ex, 0, 0), (.oh, 2, 0), (.ex, 1, 1), (.oh, 2, 1), (.ex, 0, 2), (.oh, 0, 1), (.ex, 1, 0), (.oh, 1, 2), (.ex, 2, 2)
                 ],
                 [
                     // diag from right
                     //oxx
                     //oxo
                     //xox
-                    (.Ex, 2, 2), (.Oh, 0, 0), (.Ex, 1, 1), (.Oh, 2, 1), (.Ex, 0, 2), (.Oh, 0, 1), (.Ex, 1, 0), (.Oh, 1, 2), (.Ex, 2, 0)
+                    (.ex, 2, 2), (.oh, 0, 0), (.ex, 1, 1), (.oh, 2, 1), (.ex, 0, 2), (.oh, 0, 1), (.ex, 1, 0), (.oh, 1, 2), (.ex, 2, 0)
                 ],
                 [
                     // diag from right (dupe for balance)
                     //oxx
                     //oxo
                     //xox
-                    (.Ex, 2, 2), (.Oh, 0, 0), (.Ex, 1, 1), (.Oh, 2, 1), (.Ex, 0, 2), (.Oh, 0, 1), (.Ex, 1, 0), (.Oh, 1, 2), (.Ex, 2, 0)
+                    (.ex, 2, 2), (.oh, 0, 0), (.ex, 1, 1), (.oh, 2, 1), (.ex, 0, 2), (.oh, 0, 1), (.ex, 1, 0), (.oh, 1, 2), (.ex, 2, 0)
                 ]
             ]
         ]
         
         for y in 0..<ultimateSlotCount {
             for x in 0..<ultimateSlotCount {
-                let boardId = gs.getBoardId(gameId, index: (x, y))
+                let boardId = gs.getBoardId(gameId: gameId, index: (x, y))
                 let sequence = sequences[x][y]
                 for (p, x, y) in sequence {
-                    let owner = gs.getBoardOwner(boardId)
-                    XCTAssert(owner == .None, "Owner was \(owner)")
-                    let slotId = gs.getSlotId(boardId, index: (x, y))
+                    let owner = gs.getBoardOwner(boardId: boardId)
+                    XCTAssert(owner == .none, "Owner was \(owner)")
+                    let slotId = gs.getSlotId(boardId: boardId, index: (x, y))
                     XCTAssert(slotId != invalidId)
-                    let set = gs.setSlotOwner(slotId, type: p)
+                    let set = gs.setSlotOwner(slotId: slotId, type: p)
                     XCTAssert(set == true, "While setting \(x) \(y)")
-                    let get = gs.getSlotOwner(slotId)
+                    let get = gs.getSlotOwner(slotId: slotId)
                     XCTAssert(get == p)
                 }
-                let owner = gs.getBoardOwner(boardId)
-                XCTAssert(owner == .Ex)
+                let owner = gs.getBoardOwner(boardId: boardId)
+                XCTAssert(owner == .ex)
             }
         }
         
-        let field = gs.getField(gameId)
+        let field = gs.getField(gameId: gameId)
         XCTAssert(field != nil)
         let serialized = field!.serialize()
         
-        let deserialized = Field.deserialize(serialized)
+        let deserialized = Field.deserialize(source: serialized)
         XCTAssert(deserialized != nil)
         
         let reSerialized = deserialized!.serialize()
@@ -654,26 +655,26 @@ class PerfectUltimateNaughtsAndCrossesTests: XCTestCase {
         let player1Nick = "player 1"
         let player2Nick = "player 2"
         let gs = GameStateServer()
-        let player1Id = gs.createPlayer(player1Nick)
-        let player2Id = gs.createPlayer(player2Nick)
+        let player1Id = gs.createPlayer(nick: player1Nick)
+        let player2Id = gs.createPlayer(nick: player2Nick)
         XCTAssert(player1Id != invalidId)
         XCTAssert(player2Id != invalidId)
         let (gameId, _) = gs.createGame(playerX: player1Id, playerO: player2Id)
         
-        var winner = PieceType.None
+        var winner = PieceType.none
         repeat {
             
-            let state = gs.getCurrentPlayer(gameId)
+            let state = gs.getActiveGameForPlayer(playerId: gameId)
             let bot = RandomMoveBot(gameId: gameId, piece: state.1)
-            bot.makeMove(gs)
+            bot.makeMove(gameState: gs)
             
-            winner = gs.getGameWinner(gameId)
+            winner = gs.getGameWinner(gameId: gameId)
             
-            let field = gs.getField(gameId)
+            let field = gs.getField(gameId: gameId)
             
             print("\(field!)")
             
-        } while winner == PieceType.None
+        } while winner == PieceType.none
         
         print("winner: \(winner)")
     }

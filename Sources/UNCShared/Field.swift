@@ -22,11 +22,11 @@ public struct Field: SquareGrid, Equatable, CustomStringConvertible {
 		}
 	}
 	
-	func serialize() -> String {
+	public func serialize() -> String {
 		return self.slots.flatMap { $0 }.map { $0.serialize() }.joined(separator: "")
 	}
 	
-	static func deserialize(source: String) -> Field? {
+	public static func deserialize(source: String) -> Field? {
 		let length = source.characters.count
 		
 		guard length == ultimateSlotCount * ultimateSlotCount * ultimateSlotCount * ultimateSlotCount else {
